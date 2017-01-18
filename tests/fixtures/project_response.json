@@ -1,0 +1,107 @@
+{
+  "project": {
+    "id": 3422,
+    "url": "",
+    "subdomain": "",
+    "created_by": {
+      "id": 7,
+      "name": "Waseem AlShikh",
+      "role": "",
+      "avatar": "https://storage.googleapis.com/saas-storage/5286aa79-2e95-46a5-b446-710011e4b512_wassem.jpg__scaled_256__cropped__scaled_32"
+    },
+    "created_on": 1481661587000,
+    "crawling_status": "n/a",
+    "source_language": {
+      "id": 94,
+      "name": "English - United States",
+      "code": "en-us",
+      "direction": "ltr",
+      "override_order": "aaa - aaa - English - United States"
+    },
+    "target_languages": [
+      {
+        "id": 190,
+        "name": "Russian - Russia",
+        "code": "ru-ru",
+        "direction": "ltr",
+        "meta": {
+          "sub_domain": {},
+          "user_assigned": true,
+          "default_page_id": 723885
+        },
+        "tm_id": "133e04a2-b796-4a4a-be2d-6d660cb66f20",
+        "glossary_id": 3066
+      },
+      {
+        "id": 92,
+        "name": "English - United Kingdom",
+        "code": "en-gb",
+        "direction": "ltr",
+        "meta": {
+          "sub_domain": {},
+          "user_assigned": true,
+          "default_page_id": 723662
+        },
+        "tm_id": "2415bff3-8e09-4f04-9669-60751d4f5f67",
+        "glossary_id": 3081
+      },
+      {
+        "id": 150,
+        "name": "Japanese - Japan",
+        "code": "ja-jp",
+        "direction": "ltr",
+        "meta": {
+          "sub_domain": {},
+          "user_assigned": true,
+          "default_page_id": 723662
+        },
+        "tm_id": "30e98e18-0f67-4a20-879d-17f20247275b",
+        "glossary_id": 3082
+      }
+    ],
+    "name": "Test json project",
+    "swap_dir": true,
+    "google_analytics": null,
+    "domain_verified": false,
+    "add_to_tm_at": 7865,
+    "status": null,
+    "content_type": {
+      "id": 1,
+      "name": "Strings",
+      "content_source": "api"
+    },
+    "content_type_code": null,
+    "admin_only_reports": true,
+    "text_record_token": "6bf88631-35c2-46b4-828c-0c566f79d266",
+    "mobile_project_info": null,
+    "content_source": {
+      "id": 1,
+      "name": "Strings",
+      "content_source": "api"
+    },
+    "api_key": "af32f77b-41b2-43bb-965f-3392082e44ac",
+    "source_branch": null,
+    "content_type_codes": [
+      {
+        "content_type_code_id": 148,
+        "content_type_code": "JSON",
+        "name": null,
+        "extensions": null
+      },
+      {
+        "content_type_code_id": 145,
+        "content_type_code": "YAML",
+        "name": null,
+        "extensions": null
+      },
+      {
+        "content_type_code_id": 142,
+        "content_type_code": "macStrings",
+        "name": null,
+        "extensions": null
+      }
+    ],
+    "segmentation": "default",
+    "timezone": "PST8PDT"
+  }
+}

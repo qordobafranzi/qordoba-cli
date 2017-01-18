@@ -1,0 +1,252 @@
+from __future__ import unicode_literals, print_function
+
+import argparse
+import os
+import sys
+import logging
+import itertools
+
+from abc import ABCMeta, abstractmethod
+
+from terminaltables import AsciiTable
+
+from qordoba.commands.delete import delete_command
+from qordoba.commands.init import init_command
+from qordoba.commands.ls import ls_command
+from qordoba.commands.pull import pull_command
+from qordoba.commands.push import push_command
+from qordoba.commands.status import status_command
+from qordoba.settings import load_settings, SettingsError
+from qordoba.utils import with_metaclass, FilePathType, CommaSeparatedSet
+from qordoba.log import init
+
+log = logging.getLogger('qordoba')
+
+
+try:
+    import signal
+
+    def exithandler(signum, frame):
+        signal.signal(signal.SIGINT, signal.SIG_IGN)
+        signal.signal(signal.SIGTERM, signal.SIG_IGN)
+        sys.exit(1)
+
+    signal.signal(signal.SIGINT, exithandler)
+    signal.signal(signal.SIGTERM, exithandler)
+    if hasattr(signal, 'SIGPIPE'):
+        signal.signal(signal.SIGPIPE, signal.SIG_DFL)
+
+except KeyboardInterrupt:
+    sys.exit(1)
+
+
+class BaseHandler(with_metaclass(ABCMeta)):
+    name = NotImplemented
+    help = None
+
+    def __init__(self, **kwargs):
+        super(BaseHandler, self).__init__()
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+
+        self._curdir = os.path.abspath(os.getcwd())
+
+    def load_settings(self):
+        config, loaded = load_settings(access_token=self.access_token,
+                                       project_id=self.project_id)
+        if not loaded:
+            log.info('Config not found...')
+        return config
+
+    @classmethod
+    def register(cls, root, **kwargs):
+        kwargs.setdefault('name', cls.name)
+        kwargs.setdefault('help', cls.help)
+
+        parser = root.add_parser(**kwargs)
+        parser.set_defaults(_handler=cls)
+        parser.add_argument('--project-id', required=False, type=str, dest='project_id', help='The ID of your Qordoba project',
+                            default=None)
+        parser.add_argument('--access-token', required=False, type=str, dest='access_token', help='Your Qordoba access token',
+                            default=None)
+        parser.add_argument('--traceback', dest='traceback', action='store_true')
+        parser.add_argument('--debug', dest='debug', default=False, action='store_true')
+
+        return parser
+
+    def __call__(self):
+        self.main()
+
+    @abstractmethod
+    def main(self):
+        pass
+
+
+class InitHandler(BaseHandler):
+    name = 'init'
+
+    def main(self):
+        init_command(self._curdir, self.access_token, self.project_id, organization_id=self.organization_id,
+                     force=self.force)
+
+    @classmethod
+    def register(cls, root, **kwargs):
+        kwargs.setdefault('name', cls.name)
+        kwargs.setdefault('help', cls.help)
+
+        parser = root.add_parser(**kwargs)
+        parser.set_defaults(_handler=cls)
+        parser.add_argument('--organization-id', type=int, required=False, dest='organization_id',
+                            help='The ID of your Qordoba organization')
+        parser.add_argument('--access-token', type=str, required=True, dest='access_token',
+                            help='Your Qordoba access token',
+                            default=None)
+        parser.add_argument('--project-id', type=int, required=True, dest='project_id', help='The ID of your Qordoba project',
+                            default=None)
+
+        parser.add_argument('--traceback', dest='traceback', action='store_true')
+        parser.add_argument('--debug', dest='debug', action='store_true')
+        parser.add_argument('--force', dest='force', action='store_true')
+
+
+class StatusHandler(BaseHandler):
+    name = 'status'
+
+    def main(self):
+        config = self.load_settings()
+
+        rows = list(status_command(config))
+
+        table = AsciiTable(rows).table
+        print(table)
+
+
+class PullHandler(BaseHandler):
+    name = 'pull'
+    help = 'Use the pull command to download locale files from the project.'
+
+    @classmethod
+    def register(cls, *args, **kwargs):
+        parser = super(PullHandler, cls).register(*args, **kwargs)
+        parser.add_argument('-ss', dest='download_ss', action='store_true', help='Allow to download the files with smartsuggest/TM')
+
+        parser.add_argument('-l', '--languages', dest='languages', nargs='+', type=CommaSeparatedSet(),
+                            help="Option to work only on specific (comma-separated) languages")
+        parser.add_argument('-f', '--force', dest='force', action='store_true',
+                            help='Force to update local translation files.')
+        return parser
+
+    def main(self):
+        config = self.load_settings()
+        languages = []
+        if isinstance(self.languages, (list, tuple, set)):
+            languages.extend(self.languages)
+        pull_command(self._curdir, config, languages=set(itertools.chain(*languages)),
+                     download_ss=self.download_ss, force=self.force)
+
+
+class PushHandler(BaseHandler):
+    name = 'push'
+    help = """
+    Use the push command to upload your local files to the project.
+    """
+
+    @classmethod
+    def register(cls, *args, **kwargs):
+        parser = super(PushHandler, cls).register(*args, **kwargs)
+        parser.add_argument('files', nargs='*', metavar='PATH', default=None, type=FilePathType(), help="")
+        parser.add_argument('-f', '--force', dest='force', action='store_true',
+                            help='Force to push translation files.')
+        return parser
+
+    def main(self):
+        config = self.load_settings()
+        push_command(self._curdir, config, files=self.files, force=self.force)
+
+
+class ListHandler(BaseHandler):
+    name = 'ls'
+
+    def main(self):
+        rows = [['ID', 'NAME', '#SEGMENTS', 'UPDATED_ON', 'STATUS'], ]
+        rows.extend(ls_command(self.load_settings()))
+
+        table = AsciiTable(rows).table
+        print(table)
+
+
+class DeleteHandler(BaseHandler):
+    name = 'delete'
+    help = """
+    Use the delete command to delete any resources and it's translations."
+    """
+
+    @classmethod
+    def register(cls, *args, **kwargs):
+        parser = super(DeleteHandler, cls).register(*args, **kwargs)
+        parser.add_argument('file', default=(), type=str,
+                            help="Define resource name or ID")
+        parser.add_argument('--organization-id', type=int, required=False, dest='organization_id',
+                            help='The ID of your Qordoba organization')
+        parser.add_argument('-f', '--force', dest='force', action='store_true', help='Force delete resources.')
+        return parser
+
+    def main(self):
+        config = self.load_settings()
+        # @todo only delete endpoint use organization id.
+        #  Didn't find how to get organization ID from project info
+        if not config.get('organization_id', None):
+            if not self.organization_id:
+                raise argparse.ArgumentTypeError('The following argument are required: --organization-id')
+            else:
+                config['organization_id'] = self.organization_id
+
+        delete_command(self._curdir, config, self.file, force=self.force)
+
+
+def parse_arguments():
+    parser = argparse.ArgumentParser(
+        description="""
+        The Qordoba CLI allows you to manage your localization files.
+        Using Qordoba CLI, you can pull and push content from within your own application.
+        """,
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+
+    subparsers = parser.add_subparsers()
+
+    InitHandler.register(subparsers)
+    StatusHandler.register(subparsers)
+    PullHandler.register(subparsers)
+    PushHandler.register(subparsers)
+    ListHandler.register(subparsers)
+    DeleteHandler.register(subparsers)
+
+    args = parser.parse_args()
+    return args, parser
+
+
+def main():
+    args, root = parse_arguments()
+    if not hasattr(args, '_handler'):
+        root.print_help()
+        return
+
+    else:
+        log_level = logging.DEBUG if args.debug else logging.INFO
+        init(log_level, traceback=args.traceback)
+        cli_handler = args._handler(**vars(args))
+
+    try:
+        cli_handler()
+    except Exception as e:
+        log.critical(e)
+        if args.traceback:
+            import traceback
+            traceback.print_exc()
+
+        sys.exit(1)
+
+
+if __name__ == '__main__':
+    main()

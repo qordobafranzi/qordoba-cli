@@ -1,0 +1,7 @@
+[run]
+branch = True
+source = tests, qordoba
+omit = site-packages
+
+[html]
+directory = coverage

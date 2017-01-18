@@ -1,0 +1,6 @@
+qordoba:
+  access_token: 'aaaaaaa-bbbb-cccc-dddd-fffffffff'
+  project_id: 1111
+  push:
+    sources:
+      - file: './config/locales/<language_code>.yml'

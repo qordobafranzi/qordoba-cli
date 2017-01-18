@@ -1,0 +1,991 @@
+{
+  "languages": [
+    {
+      "id": 94,
+      "name": "English - United States",
+      "code": "en-us",
+      "direction": "ltr",
+      "override_order": "aaa - aaa - English - United States"
+    },
+    {
+      "id": 92,
+      "name": "English - United Kingdom",
+      "code": "en-gb",
+      "direction": "ltr",
+      "override_order": "aaa - baa - English - United Kingdom"
+    },
+    {
+      "id": 76,
+      "name": "English - Canada",
+      "code": "en-ca",
+      "direction": "ltr",
+      "override_order": "aaa - caa - English - Canada"
+    },
+    {
+      "id": 72,
+      "name": "English - Australia",
+      "code": "en-au",
+      "direction": "ltr",
+      "override_order": "aaa - daa - English - Australia"
+    },
+    {
+      "id": 80,
+      "name": "English - Ireland",
+      "code": "en-ir",
+      "direction": "ltr",
+      "override_order": "aaa - eaa - English - Ireland"
+    },
+    {
+      "id": 222,
+      "name": "Spanish - Mexico",
+      "code": "es-mx",
+      "direction": "ltr",
+      "override_order": "aaa - faa - Spanish - Mexico"
+    },
+    {
+      "id": 234,
+      "name": "Spanish - Spain",
+      "code": "es-es",
+      "direction": "ltr",
+      "override_order": "aaa - gaa - Spanish - Spain"
+    },
+    {
+      "id": 208,
+      "name": "Spanish - Colombia",
+      "code": "es-co",
+      "direction": "ltr",
+      "override_order": "aaa - haa - Spanish - Colombia"
+    },
+    {
+      "id": 202,
+      "name": "Spanish - Argentina",
+      "code": "es-ar",
+      "direction": "ltr",
+      "override_order": "aaa - iaa - Spanish - Argentina"
+    },
+    {
+      "id": 230,
+      "name": "Spanish - Peru",
+      "code": "es-pe",
+      "direction": "ltr",
+      "override_order": "aaa - jaa - Spanish - Peru"
+    },
+    {
+      "id": 238,
+      "name": "Spanish - Venezuela",
+      "code": "es-ve",
+      "direction": "ltr",
+      "override_order": "aaa - kaa - Spanish - Venezuela"
+    },
+    {
+      "id": 206,
+      "name": "Spanish - Chile",
+      "code": "es-cl",
+      "direction": "ltr",
+      "override_order": "aaa - laa - Spanish - Chile"
+    },
+    {
+      "id": 214,
+      "name": "Spanish - Ecuador",
+      "code": "es-ec",
+      "direction": "ltr",
+      "override_order": "aaa - maa - Spanish - Ecuador"
+    },
+    {
+      "id": 110,
+      "name": "French - France",
+      "code": "fr-fr",
+      "direction": "ltr",
+      "override_order": "aaa - naa - French - France"
+    },
+    {
+      "id": 124,
+      "name": "German - Germany",
+      "code": "de-de",
+      "direction": "ltr",
+      "override_order": "aaa - oaa - German - Germany"
+    },
+    {
+      "id": 1,
+      "name": "Afrikaans - South Africa",
+      "code": "af-za",
+      "direction": "ltr",
+      "override_order": "Afrikaans - South Africa"
+    },
+    {
+      "id": 2,
+      "name": "Albanian - Albania",
+      "code": "sq-al",
+      "direction": "ltr",
+      "override_order": "Albanian - Albania"
+    },
+    {
+      "id": 3,
+      "name": "Arabic - Algeria",
+      "code": "ar-dz",
+      "direction": "rtl",
+      "override_order": "Arabic - Algeria"
+    },
+    {
+      "id": 4,
+      "name": "Arabic - Bahrain",
+      "code": "ar-bh",
+      "direction": "rtl",
+      "override_order": "Arabic - Bahrain"
+    },
+    {
+      "id": 5,
+      "name": "Arabic - Egypt",
+      "code": "ar-eg",
+      "direction": "rtl",
+      "override_order": "Arabic - Egypt"
+    },
+    {
+      "id": 6,
+      "name": "Arabic - Iraq",
+      "code": "ar-iq",
+      "direction": "rtl",
+      "override_order": "Arabic - Iraq"
+    },
+    {
+      "id": 8,
+      "name": "Arabic - Jordan",
+      "code": "ar-jo",
+      "direction": "rtl",
+      "override_order": "Arabic - Jordan"
+    },
+    {
+      "id": 10,
+      "name": "Arabic - Kuwait",
+      "code": "ar-kw",
+      "direction": "rtl",
+      "override_order": "Arabic - Kuwait"
+    },
+    {
+      "id": 12,
+      "name": "Arabic - Lebanon",
+      "code": "ar-lb",
+      "direction": "rtl",
+      "override_order": "Arabic - Lebanon"
+    },
+    {
+      "id": 14,
+      "name": "Arabic - Libya",
+      "code": "ar-ly",
+      "direction": "rtl",
+      "override_order": "Arabic - Libya"
+    },
+    {
+      "id": 16,
+      "name": "Arabic - Morocco",
+      "code": "ar-ma",
+      "direction": "rtl",
+      "override_order": "Arabic - Morocco"
+    },
+    {
+      "id": 18,
+      "name": "Arabic - Oman",
+      "code": "ar-oa",
+      "direction": "rtl",
+      "override_order": "Arabic - Oman"
+    },
+    {
+      "id": 20,
+      "name": "Arabic - Qatar",
+      "code": "ar-qa",
+      "direction": "rtl",
+      "override_order": "Arabic - Qatar"
+    },
+    {
+      "id": 22,
+      "name": "Arabic - Saudi Arabia",
+      "code": "ar-sa",
+      "direction": "rtl",
+      "override_order": "Arabic - Saudi Arabia"
+    },
+    {
+      "id": 24,
+      "name": "Arabic - Syria",
+      "code": "ar-sy",
+      "direction": "rtl",
+      "override_order": "Arabic - Syria"
+    },
+    {
+      "id": 26,
+      "name": "Arabic - Tunisia",
+      "code": "ar-tn",
+      "direction": "rtl",
+      "override_order": "Arabic - Tunisia"
+    },
+    {
+      "id": 28,
+      "name": "Arabic - United Arab Emirates",
+      "code": "ar-ae",
+      "direction": "rtl",
+      "override_order": "Arabic - United Arab Emirates"
+    },
+    {
+      "id": 30,
+      "name": "Arabic - Yemen",
+      "code": "ar-ye",
+      "direction": "rtl",
+      "override_order": "Arabic - Yemen"
+    },
+    {
+      "id": 32,
+      "name": "Armenian - Armenia",
+      "code": "hy-am",
+      "direction": "ltr",
+      "override_order": "Armenian - Armenia"
+    },
+    {
+      "id": 34,
+      "name": "Azeri (Cyrillic) - Azerbaijan",
+      "code": "cy-az-az",
+      "direction": "ltr",
+      "override_order": "Azeri (Cyrillic) - Azerbaijan"
+    },
+    {
+      "id": 36,
+      "name": "Azeri (Latin) - Azerbaijan",
+      "code": "lt-az-az",
+      "direction": "ltr",
+      "override_order": "Azeri (Latin) - Azerbaijan"
+    },
+    {
+      "id": 38,
+      "name": "Basque - Basque",
+      "code": "eu-es",
+      "direction": "ltr",
+      "override_order": "Basque - Basque"
+    },
+    {
+      "id": 40,
+      "name": "Belarusian - Belarus",
+      "code": "be-by",
+      "direction": "ltr",
+      "override_order": "Belarusian - Belarus"
+    },
+    {
+      "id": 268,
+      "name": "Bengal - Bengali",
+      "code": "bn-bn",
+      "direction": "ltr",
+      "override_order": "Bengali - Bengali"
+    },
+    {
+      "id": 42,
+      "name": "Bulgarian - Bulgaria",
+      "code": "bg-bg",
+      "direction": "ltr",
+      "override_order": "Bulgarian - Bulgaria"
+    },
+    {
+      "id": 44,
+      "name": "Catalan - Catalan",
+      "code": "ca-es",
+      "direction": "ltr",
+      "override_order": "Catalan - Catalan"
+    },
+    {
+      "id": 56,
+      "name": "Chinese (Simplified)",
+      "code": "zh-chs",
+      "direction": "ltr",
+      "override_order": "Chinese (Simplified)"
+    },
+    {
+      "id": 58,
+      "name": "Chinese (Traditional)",
+      "code": "zh-cht",
+      "direction": "ltr",
+      "override_order": "Chinese (Traditional)"
+    },
+    {
+      "id": 46,
+      "name": "Chinese - China",
+      "code": "zh-cn",
+      "direction": "ltr",
+      "override_order": "Chinese - China"
+    },
+    {
+      "id": 48,
+      "name": "Chinese - Hong Kong SAR",
+      "code": "zh-hk",
+      "direction": "ltr",
+      "override_order": "Chinese - Hong Kong SAR"
+    },
+    {
+      "id": 50,
+      "name": "Chinese - Macau SAR",
+      "code": "zh-mo",
+      "direction": "ltr",
+      "override_order": "Chinese - Macau SAR"
+    },
+    {
+      "id": 52,
+      "name": "Chinese - Singapore",
+      "code": "zh-sg",
+      "direction": "ltr",
+      "override_order": "Chinese - Singapore"
+    },
+    {
+      "id": 54,
+      "name": "Chinese - Taiwan",
+      "code": "zh-tw",
+      "direction": "ltr",
+      "override_order": "Chinese - Taiwan"
+    },
+    {
+      "id": 60,
+      "name": "Croatian - Croatia",
+      "code": "hr-hr",
+      "direction": "ltr",
+      "override_order": "Croatian - Croatia"
+    },
+    {
+      "id": 62,
+      "name": "Czech - Czech Republic",
+      "code": "cs-cz",
+      "direction": "ltr",
+      "override_order": "Czech - Czech Republic"
+    },
+    {
+      "id": 64,
+      "name": "Danish - Denmark",
+      "code": "da-dk",
+      "direction": "ltr",
+      "override_order": "Danish - Denmark"
+    },
+    {
+      "id": 66,
+      "name": "Dhivehi - Maldives",
+      "code": "div-mv",
+      "direction": "rtl",
+      "override_order": "Dhivehi - Maldives"
+    },
+    {
+      "id": 68,
+      "name": "Dutch - Belgium",
+      "code": "nl-be",
+      "direction": "ltr",
+      "override_order": "Dutch - Belgium"
+    },
+    {
+      "id": 70,
+      "name": "Dutch - The Netherlands",
+      "code": "nl-nl",
+      "direction": "ltr",
+      "override_order": "Dutch - The Netherlands"
+    },
+    {
+      "id": 74,
+      "name": "English - Belize",
+      "code": "en-bz",
+      "direction": "ltr",
+      "override_order": "English - Belize"
+    },
+    {
+      "id": 78,
+      "name": "English - Caribbean",
+      "code": "en-cb",
+      "direction": "ltr",
+      "override_order": "English - Caribbean"
+    },
+    {
+      "id": 82,
+      "name": "English - Jamaica",
+      "code": "en-jm",
+      "direction": "ltr",
+      "override_order": "English - Jamaica"
+    },
+    {
+      "id": 84,
+      "name": "English - New Zealand",
+      "code": "en-nz",
+      "direction": "ltr",
+      "override_order": "English - New Zealand"
+    },
+    {
+      "id": 86,
+      "name": "English - Philippines",
+      "code": "en-ph",
+      "direction": "ltr",
+      "override_order": "English - Philippines"
+    },
+    {
+      "id": 88,
+      "name": "English - South Africa",
+      "code": "en-za",
+      "direction": "ltr",
+      "override_order": "English - South Africa"
+    },
+    {
+      "id": 90,
+      "name": "English - Trinidad and Tobago",
+      "code": "en-tt",
+      "direction": "ltr",
+      "override_order": "English - Trinidad and Tobago"
+    },
+    {
+      "id": 96,
+      "name": "English - Zimbabwe",
+      "code": "en-zw",
+      "direction": "ltr",
+      "override_order": "English - Zimbabwe"
+    },
+    {
+      "id": 98,
+      "name": "Estonian - Estonia",
+      "code": "et-ee",
+      "direction": "ltr",
+      "override_order": "Estonian - Estonia"
+    },
+    {
+      "id": 100,
+      "name": "Faroese - Faroe Islands",
+      "code": "fo-fo",
+      "direction": "ltr",
+      "override_order": "Faroese - Faroe Islands"
+    },
+    {
+      "id": 102,
+      "name": "Farsi - Iran",
+      "code": "fa-ir",
+      "direction": "ltr",
+      "override_order": "Farsi - Iran"
+    },
+    {
+      "id": 104,
+      "name": "Finnish - Finland",
+      "code": "fi-fi",
+      "direction": "ltr",
+      "override_order": "Finnish - Finland"
+    },
+    {
+      "id": 106,
+      "name": "French - Belgium",
+      "code": "fr-be",
+      "direction": "ltr",
+      "override_order": "French - Belgium"
+    },
+    {
+      "id": 108,
+      "name": "French - Canada",
+      "code": "fr-ca",
+      "direction": "ltr",
+      "override_order": "French - Canada"
+    },
+    {
+      "id": 112,
+      "name": "French - Luxembourg",
+      "code": "fr-lu",
+      "direction": "ltr",
+      "override_order": "French - Luxembourg"
+    },
+    {
+      "id": 114,
+      "name": "French - Monaco",
+      "code": "fr-mc",
+      "direction": "ltr",
+      "override_order": "French - Monaco"
+    },
+    {
+      "id": 116,
+      "name": "French - Switzerland",
+      "code": "fr-ch",
+      "direction": "ltr",
+      "override_order": "French - Switzerland"
+    },
+    {
+      "id": 118,
+      "name": "Galician - Galician",
+      "code": "gl-es",
+      "direction": "ltr",
+      "override_order": "Galician - Galician"
+    },
+    {
+      "id": 120,
+      "name": "Georgian - Georgia",
+      "code": "ka-ge",
+      "direction": "ltr",
+      "override_order": "Georgian - Georgia"
+    },
+    {
+      "id": 122,
+      "name": "German - Austria",
+      "code": "de-at",
+      "direction": "ltr",
+      "override_order": "German - Austria"
+    },
+    {
+      "id": 126,
+      "name": "German - Liechtenstein",
+      "code": "de-li",
+      "direction": "ltr",
+      "override_order": "German - Liechtenstein"
+    },
+    {
+      "id": 128,
+      "name": "German - Luxembourg",
+      "code": "de-lu",
+      "direction": "ltr",
+      "override_order": "German - Luxembourg"
+    },
+    {
+      "id": 130,
+      "name": "German - Switzerland",
+      "code": "de-ch",
+      "direction": "ltr",
+      "override_order": "German - Switzerland"
+    },
+    {
+      "id": 132,
+      "name": "Greek - Greece",
+      "code": "el-gr",
+      "direction": "ltr",
+      "override_order": "Greek - Greece"
+    },
+    {
+      "id": 134,
+      "name": "Gujarati - India",
+      "code": "gu-in",
+      "direction": "ltr",
+      "override_order": "Gujarati - India"
+    },
+    {
+      "id": 136,
+      "name": "Hebrew - Israel",
+      "code": "he-il",
+      "direction": "rtl",
+      "override_order": "Hebrew - Israel"
+    },
+    {
+      "id": 138,
+      "name": "Hindi - India",
+      "code": "hi-in",
+      "direction": "ltr",
+      "override_order": "Hindi - India"
+    },
+    {
+      "id": 140,
+      "name": "Hungarian - Hungary",
+      "code": "hu-hu",
+      "direction": "ltr",
+      "override_order": "Hungarian - Hungary"
+    },
+    {
+      "id": 142,
+      "name": "Icelandic - Iceland",
+      "code": "is-is",
+      "direction": "ltr",
+      "override_order": "Icelandic - Iceland"
+    },
+    {
+      "id": 269,
+      "name": "Indian - Bengali",
+      "code": "bn-in",
+      "direction": "ltr",
+      "override_order": "India - Bengali"
+    },
+    {
+      "id": 270,
+      "name": "Indian - Malayalam",
+      "code": "ml-in",
+      "direction": "ltr",
+      "override_order": "Indian - Malayalam"
+    },
+    {
+      "id": 144,
+      "name": "Indonesian - Indonesia",
+      "code": "id-id",
+      "direction": "ltr",
+      "override_order": "Indonesian - Indonesia"
+    },
+    {
+      "id": 146,
+      "name": "Italian - Italy",
+      "code": "it-it",
+      "direction": "ltr",
+      "override_order": "Italian - Italy"
+    },
+    {
+      "id": 148,
+      "name": "Italian - Switzerland",
+      "code": "it-ch",
+      "direction": "ltr",
+      "override_order": "Italian - Switzerland"
+    },
+    {
+      "id": 150,
+      "name": "Japanese - Japan",
+      "code": "ja-jp",
+      "direction": "ltr",
+      "override_order": "Japanese - Japan"
+    },
+    {
+      "id": 152,
+      "name": "Kannada - India",
+      "code": "kn-in",
+      "direction": "ltr",
+      "override_order": "Kannada - India"
+    },
+    {
+      "id": 154,
+      "name": "Kazakh - Kazakhstan",
+      "code": "kk-kz",
+      "direction": "ltr",
+      "override_order": "Kazakh - Kazakhstan"
+    },
+    {
+      "id": 156,
+      "name": "Konkani - India",
+      "code": "kok-in",
+      "direction": "ltr",
+      "override_order": "Konkani - India"
+    },
+    {
+      "id": 158,
+      "name": "Korean - Korea",
+      "code": "ko-kr",
+      "direction": "ltr",
+      "override_order": "Korean - Korea"
+    },
+    {
+      "id": 160,
+      "name": "Kyrgyz - Kazakhstan",
+      "code": "ky-kz",
+      "direction": "ltr",
+      "override_order": "Kyrgyz - Kazakhstan"
+    },
+    {
+      "id": 162,
+      "name": "Latvian - Latvia",
+      "code": "lv-lv",
+      "direction": "ltr",
+      "override_order": "Latvian - Latvia"
+    },
+    {
+      "id": 164,
+      "name": "Lithuanian - Lithuania",
+      "code": "lt-lt",
+      "direction": "ltr",
+      "override_order": "Lithuanian - Lithuania"
+    },
+    {
+      "id": 166,
+      "name": "Macedonian (FYROM)",
+      "code": "mk-mk",
+      "direction": "ltr",
+      "override_order": "Macedonian (FYROM)"
+    },
+    {
+      "id": 168,
+      "name": "Malay - Brunei",
+      "code": "ms-bn",
+      "direction": "ltr",
+      "override_order": "Malay - Brunei"
+    },
+    {
+      "id": 170,
+      "name": "Malay - Malaysia",
+      "code": "ms-my",
+      "direction": "ltr",
+      "override_order": "Malay - Malaysia"
+    },
+    {
+      "id": 172,
+      "name": "Marathi - India",
+      "code": "mr-in",
+      "direction": "ltr",
+      "override_order": "Marathi - India"
+    },
+    {
+      "id": 174,
+      "name": "Mongolian - Mongolia",
+      "code": "mn-mn",
+      "direction": "ltr",
+      "override_order": "Mongolian - Mongolia"
+    },
+    {
+      "id": 271,
+      "name": "Myanmar - Burmese",
+      "code": "mmr-my",
+      "direction": "ltr",
+      "override_order": "Myanmar - Burmese"
+    },
+    {
+      "id": 176,
+      "name": "Norwegian (Bokmål) - Norway",
+      "code": "nb-no",
+      "direction": "ltr",
+      "override_order": "Norwegian (Bokmål) - Norway"
+    },
+    {
+      "id": 178,
+      "name": "Norwegian (Nynorsk) - Norway",
+      "code": "nn-no",
+      "direction": "ltr",
+      "override_order": "Norwegian (Nynorsk) - Norway"
+    },
+    {
+      "id": 180,
+      "name": "Polish - Poland",
+      "code": "pl-pl",
+      "direction": "ltr",
+      "override_order": "Polish - Poland"
+    },
+    {
+      "id": 182,
+      "name": "Portuguese - Brazil",
+      "code": "pt-br",
+      "direction": "ltr",
+      "override_order": "Portuguese - Brazil"
+    },
+    {
+      "id": 184,
+      "name": "Portuguese - Portugal",
+      "code": "pt-pt",
+      "direction": "ltr",
+      "override_order": "Portuguese - Portugal"
+    },
+    {
+      "id": 186,
+      "name": "Punjabi - India",
+      "code": "pa-in",
+      "direction": "ltr",
+      "override_order": "Punjabi - India"
+    },
+    {
+      "id": 188,
+      "name": "Romanian - Romania",
+      "code": "ro-ro",
+      "direction": "ltr",
+      "override_order": "Romanian - Romania"
+    },
+    {
+      "id": 190,
+      "name": "Russian - Russia",
+      "code": "ru-ru",
+      "direction": "ltr",
+      "override_order": "Russian - Russia"
+    },
+    {
+      "id": 192,
+      "name": "Sanskrit - India",
+      "code": "sa-in",
+      "direction": "ltr",
+      "override_order": "Sanskrit - India"
+    },
+    {
+      "id": 194,
+      "name": "Serbian (Cyrillic) - Serbia",
+      "code": "cy-sr-sp",
+      "direction": "ltr",
+      "override_order": "Serbian (Cyrillic) - Serbia"
+    },
+    {
+      "id": 196,
+      "name": "Serbian (Latin) - Serbia",
+      "code": "lt-sr-sp",
+      "direction": "ltr",
+      "override_order": "Serbian (Latin) - Serbia"
+    },
+    {
+      "id": 198,
+      "name": "Slovak - Slovakia",
+      "code": "sk-sk",
+      "direction": "ltr",
+      "override_order": "Slovak - Slovakia"
+    },
+    {
+      "id": 200,
+      "name": "Slovenian - Slovenia",
+      "code": "sl-si",
+      "direction": "ltr",
+      "override_order": "Slovenian - Slovenia"
+    },
+    {
+      "id": 204,
+      "name": "Spanish - Bolivia",
+      "code": "es-bo",
+      "direction": "ltr",
+      "override_order": "Spanish - Bolivia"
+    },
+    {
+      "id": 210,
+      "name": "Spanish - Costa Rica",
+      "code": "es-cr",
+      "direction": "ltr",
+      "override_order": "Spanish - Costa Rica"
+    },
+    {
+      "id": 212,
+      "name": "Spanish - Dominican Republic",
+      "code": "es-do",
+      "direction": "ltr",
+      "override_order": "Spanish - Dominican Republic"
+    },
+    {
+      "id": 216,
+      "name": "Spanish - El Salvador",
+      "code": "es-sv",
+      "direction": "ltr",
+      "override_order": "Spanish - El Salvador"
+    },
+    {
+      "id": 218,
+      "name": "Spanish - Guatemala",
+      "code": "es-gt",
+      "direction": "ltr",
+      "override_order": "Spanish - Guatemala"
+    },
+    {
+      "id": 220,
+      "name": "Spanish - Honduras",
+      "code": "es-hn",
+      "direction": "ltr",
+      "override_order": "Spanish - Honduras"
+    },
+    {
+      "id": 224,
+      "name": "Spanish - Nicaragua",
+      "code": "es-ni",
+      "direction": "ltr",
+      "override_order": "Spanish - Nicaragua"
+    },
+    {
+      "id": 226,
+      "name": "Spanish - Panama",
+      "code": "es-pa",
+      "direction": "ltr",
+      "override_order": "Spanish - Panama"
+    },
+    {
+      "id": 228,
+      "name": "Spanish - Paraguay",
+      "code": "es-py",
+      "direction": "ltr",
+      "override_order": "Spanish - Paraguay"
+    },
+    {
+      "id": 232,
+      "name": "Spanish - Puerto Rico",
+      "code": "es-pr",
+      "direction": "ltr",
+      "override_order": "Spanish - Puerto Rico"
+    },
+    {
+      "id": 236,
+      "name": "Spanish - Uruguay",
+      "code": "es-uy",
+      "direction": "ltr",
+      "override_order": "Spanish - Uruguay"
+    },
+    {
+      "id": 240,
+      "name": "Swahili - Kenya ",
+      "code": "sw-ke",
+      "direction": "ltr",
+      "override_order": "Swahili - Kenya "
+    },
+    {
+      "id": 242,
+      "name": "Swedish - Finland",
+      "code": "sv-fi",
+      "direction": "ltr",
+      "override_order": "Swedish - Finland"
+    },
+    {
+      "id": 244,
+      "name": "Swedish - Sweden ",
+      "code": "sv-se",
+      "direction": "ltr",
+      "override_order": "Swedish - Sweden "
+    },
+    {
+      "id": 246,
+      "name": "Syriac - Syria ",
+      "code": "syr-sy",
+      "direction": "ltr",
+      "override_order": "Syriac - Syria "
+    },
+    {
+      "id": 267,
+      "name": "Tagalog - Philippines",
+      "code": "tl-ph",
+      "direction": "ltr",
+      "override_order": "Tagalog - Philippines"
+    },
+    {
+      "id": 248,
+      "name": "Tamil - India ",
+      "code": "ta-in",
+      "direction": "ltr",
+      "override_order": "Tamil - India "
+    },
+    {
+      "id": 250,
+      "name": "Tatar - Russia ",
+      "code": "tt-ru",
+      "direction": "ltr",
+      "override_order": "Tatar - Russia "
+    },
+    {
+      "id": 252,
+      "name": "Telugu - India ",
+      "code": "te-in",
+      "direction": "ltr",
+      "override_order": "Telugu - India "
+    },
+    {
+      "id": 254,
+      "name": "Thai - Thailand",
+      "code": "th-th",
+      "direction": "ltr",
+      "override_order": "Thai - Thailand"
+    },
+    {
+      "id": 256,
+      "name": "Turkish - Turkey",
+      "code": "tr-tr",
+      "direction": "ltr",
+      "override_order": "Turkish - Turkey"
+    },
+    {
+      "id": 258,
+      "name": "Ukrainian - Ukraine",
+      "code": "uk-ua",
+      "direction": "ltr",
+      "override_order": "Ukrainian - Ukraine"
+    },
+    {
+      "id": 260,
+      "name": "Urdu - Pakistan",
+      "code": "ur-pk",
+      "direction": "rtl",
+      "override_order": "Urdu - Pakistan"
+    },
+    {
+      "id": 262,
+      "name": "Uzbek (Cyrillic) - Uzbekistan",
+      "code": "cy-uz-uz",
+      "direction": "ltr",
+      "override_order": "Uzbek (Cyrillic) - Uzbekistan"
+    },
+    {
+      "id": 264,
+      "name": "Uzbek (Latin) - Uzbekistan",
+      "code": "lt-uz-uz",
+      "direction": "ltr",
+      "override_order": "Uzbek (Latin) - Uzbekistan"
+    },
+    {
+      "id": 266,
+      "name": "Vietnamese - Vietnam",
+      "code": "vi-vn",
+      "direction": "ltr",
+      "override_order": "Vietnamese - Vietnam"
+    }
+  ]
+}
