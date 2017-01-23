@@ -8,7 +8,7 @@ from qordoba.settings import load_settings, SettingsError
 @pytest.fixture
 def env_config_path(curdir):
     root = os.path.abspath(curdir)
-    return os.path.join(root, 'fixtures/qordoba_env.yml')
+    return os.path.join(root, 'fixtures', 'qordoba_env.yml')
 
 
 @pytest.fixture

@@ -1,7 +1,7 @@
 import pytest
 
 from qordoba.languages import Language
-from qordoba.sources import validate_push_pattern, PatternNotValid, create_target_path_by_pattern
+from qordoba.sources import validate_push_pattern, PatternNotValid, create_target_path_by_pattern, to_native
 
 PATTERN1 = 'i18n/<language_code>/translations.json'
 PATTERN2 = 'folder1/values-<language_lang_code>/strings.xml'
@@ -71,21 +71,21 @@ def test_validate_push_pattern_invalid(invalid_pattern):
                                              PATTERN_PUSH_INVALID2,
                                              PATTERN_PUSH_INVALID3
                                              ])
-def test_create_target_path_by_pattern_invalid(invalid_pattern, curdir):
+def test_create_target_path_by_pattern_invalid(invalid_pattern, projectdir):
     with pytest.raises(PatternNotValid):
-        create_target_path_by_pattern(curdir, None, pattern=invalid_pattern)
+        create_target_path_by_pattern(projectdir, None, pattern=invalid_pattern)
 
 
 @pytest.mark.parametrize('pattern,target_language,expected', [
-    (PATTERN1, LANGUAGE_CN, 'i18n/zh-cn/translations.json'),
-    (PATTERN2, LANGUAGE_EN, 'folder1/values-en/strings.xml'),
-    (PATTERN3, LANGUAGE_FR, 'config/locales/server.fr-fr.yml'),
-    (PATTERN4, LANGUAGE_CN, 'folder2/Chinese/strings.xml'),
-    (PATTERN5, LANGUAGE_FR, 'folder3/strings.French'),
+    (PATTERN1, LANGUAGE_CN, to_native('i18n/zh-cn/translations.json')),
+    (PATTERN2, LANGUAGE_EN, to_native('folder1/values-en/strings.xml')),
+    (PATTERN3, LANGUAGE_FR, to_native('config/locales/server.fr-fr.yml')),
+    (PATTERN4, LANGUAGE_CN, to_native('folder2/Chinese/strings.xml')),
+    (PATTERN5, LANGUAGE_FR, to_native('folder3/strings.French')),
     (PATTERN6, LANGUAGE_FR, 'FRENCH.locale')
 ])
-def test_create_target_path_by_pattern(curdir, mock_lang_storage, pattern, target_language, expected):
-    res = create_target_path_by_pattern(curdir, target_language, pattern=pattern)
+def test_create_target_path_by_pattern(mock_lang_storage, pattern, target_language, expected, projectdir):
+    res = create_target_path_by_pattern(projectdir, target_language, pattern=pattern)
     assert res.native_path == expected
 
 

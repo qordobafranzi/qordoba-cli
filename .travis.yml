@@ -1,0 +1,63 @@
+cache:
+  directories:
+    - $HOME/.cache/pip
+    - $HOME/.cache/pyenv
+
+language: generic
+matrix:
+  include:
+    - os: linux
+      sudo: false
+      env: 
+        - PYENV=2.7.13
+        - PYTHON_CONFIGURE_OPTS="--enable-shared"
+    - os: linux
+      sudo: false
+      env: 
+        - PYENV=3.5.2
+        - PYTHON_CONFIGURE_OPTS="--enable-shared"
+    - os: osx
+      env:
+        - PYENV=2.7.13
+        - PYTHON_CONFIGURE_OPTS="--enable-framework"
+    - os: osx
+      env:
+        - PYENV=3.5.2
+        - PYTHON_CONFIGURE_OPTS="--enable-framework"
+before_install:
+  # Always use latest pyenv but keep installed Python versions in cache
+  - rm -rf ~/.pyenv
+  - git clone https://github.com/yyuu/pyenv.git ~/.pyenv
+  - mkdir -p ~/.cache/pyenv/versions
+  - ln -s ~/.cache/pyenv/versions ~/.pyenv/versions
+  - export PATH="$HOME/.pyenv/shims:$HOME/.pyenv/bin:$PATH"
+  - pyenv --version
+  - pyenv install --skip-existing $PYENV
+  - pyenv global $PYENV
+  - pyenv rehash
+  - python --version
+  - pip --version
+  - pip install virtualenv
+  - python -m virtualenv ~/.venv
+  - source ~/.venv/bin/activate
+  - pip install -e .
+  - pip install -r requirements-dev.txt
+  
+script:
+  - py.test -v tests
+  - pyinstaller --clean qor.spec
+  - echo "qor-$TRAVIS_OS_NAME-python-$PYENV-$TRAVIS_TAG"
+  - ls dist/
+  - tar -cvzf dist/qor-$TRAVIS_OS_NAME-python-$PYENV-$TRAVIS_TAG.tar.gz dist/qor
+  - rm dist/qor
+
+deploy:
+  skip_cleanup: true
+  provider: releases
+  api_key:
+    secure: mMx3Y1ybZoGJjqYw8/fdyWBeCGUGxmjs3vNSuY/vnesgZ2IuKGfdG2QGOHaPUqzx3MDbRYSKNqtcaV/zG7uJUPNx4BvvCy90UacpPNnHyfnJIbTPIbcSaqNRQ6y/Z8QWhbLYmltUOj2b8sXZmnagolpA+T9W9RONesMh/QrXpPeeMKD/TbEwk2wnbPlTEZImirCTWhrOcrXa32co5KIkS2HpKd6UUu8jJDO86q/vqKgkem2M90O2CiMIrCIcHZGUL7Fyf75ncjTM7SqA2wHukAy3iUt0URSonmdPsN95DXSz0qDTOX5Zy+6Y3X1Dbduja2I31Y7DJiIRKainZSYl9gdMxsVXGXJwMLyDkpXQ/X1gFy+l2Vf0LB7ZBv8hOFKGH7DhkC8JvnnzCvEPt2n6Pe1kpkbBQQXWg02boYyemOFYOQzgfrdng4H0yiI1O79yQCC2+vVY8Irusej1jkhnejwFAhAv/rzOH/hcL1lUy9uqa/mAOXfnqRtSr+d4ZrCredzTOSW8BM9y2kLE+TqXPxGMNNniLMu5aUascbuUeWJSvMxCLKrxXd5eL+J08aDP2+kdlQTvirxaIqum119J7YvogoQQOm0tUD6Sr9P5BUCQAUwb7xYt29jFfrYzKju7ajPvCjS569NL0BoI8CtaZc7xPqKWyt2jkAdrabg+1X4=
+  file: dist/*
+  file_glob: true
+  on:
+    tags: true
+    all_branches: true

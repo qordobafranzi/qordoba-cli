@@ -61,7 +61,7 @@ def test_normalize_language(mock_lang_storage, lang_en_us, lang_en_gb):
     assert res.code == lang_en_us.code
 
 
-def test_normalize_language_error():
+def test_normalize_language_error(mock_lang_storage):
     with pytest.raises(LanguageNotFound):
         normalize_language('ed-ed')
 

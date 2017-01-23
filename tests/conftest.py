@@ -22,9 +22,9 @@ def lang_en_data():
 @pytest.fixture
 def language_response(curdir):
     root = os.path.abspath(curdir)
-    path = os.path.join(root, 'fixtures/languages_response.json')
+    path = os.path.join(root, 'fixtures', 'languages_response.json')
 
-    f = open(path, 'rb')
+    f = open(path, 'r')
     yield json.load(f)['languages']
 
     f.close()
@@ -41,9 +41,9 @@ def mock_lang_storage(language_response):
 @pytest.fixture
 def project_response(curdir):
     root = os.path.abspath(curdir)
-    path = os.path.join(root, 'fixtures/project_response.json')
+    path = os.path.join(root, 'fixtures', 'project_response.json')
 
-    f = open(path, 'rb')
+    f = open(path, 'r')
     yield json.load(f)['project']
 
     f.close()
@@ -51,4 +51,9 @@ def project_response(curdir):
 
 @pytest.fixture
 def curdir():
-    return '.'
+    return os.path.dirname(os.path.realpath(__file__))
+
+
+@pytest.fixture
+def projectdir(curdir):
+    return os.path.abspath(os.path.join(curdir, '../'))
