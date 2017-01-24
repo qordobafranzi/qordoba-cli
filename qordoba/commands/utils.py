@@ -15,7 +15,7 @@ else:
 
 
 
-def prompt_select(question_list, prompt='Select:'):
+def ask_select(question_list, prompt='Select:'):
     """
 
     :param question_list: Excpect list of tuples with 2 elements - ID and TEXT
@@ -45,7 +45,7 @@ def prompt_select(question_list, prompt='Select:'):
     return question_list[answer - 1]
 
 
-def prompt(question='[Y/n]?'):
+def ask_bool(question='[Y/n]?'):
     """
     Ask user a question in intercative mode
     """
@@ -60,6 +60,24 @@ def prompt(question='[Y/n]?'):
 
     return answer in yes
 
+
+def ask_question(question, answer_type=str):
+    """
+    Ask user a question in intercative mode and wait for answer.
+    """
+
+    valid = False
+    answer = None
+
+    while not valid:
+        answer = cli_input(question)
+        try:
+            answer = answer_type(answer)
+            valid = True
+        except TypeError:
+            question = 'Try again:'
+
+    return answer
 
 def mkdirs(path):
     try:

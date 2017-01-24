@@ -3,6 +3,7 @@ from __future__ import unicode_literals, print_function
 import logging
 import os
 import re
+from collections import OrderedDict
 
 from qordoba.languages import normalize_language, LanguageNotFound
 from qordoba.utils import python_2_unicode_compatible
@@ -11,9 +12,34 @@ log = logging.getLogger('qordoba')
 
 DEFAULT_PATTERN = '<language_code><extension>'
 
+CONTENT_TYPE_CODES = OrderedDict()
+CONTENT_TYPE_CODES['excel'] = ('xlsx', )
+CONTENT_TYPE_CODES['xliff'] = ('xliff', 'xlf')
+CONTENT_TYPE_CODES['XLIFF1.2'] = ('xliff', 'xlf')
+CONTENT_TYPE_CODES['xmlAndroid'] = ('xml', )
+CONTENT_TYPE_CODES['macStrings'] = ('strings', )
+CONTENT_TYPE_CODES['PO'] = ('po',)
+CONTENT_TYPE_CODES['propertiesJava'] = ('properties', )
+CONTENT_TYPE_CODES['YAML'] = ('yml', 'yaml')
+CONTENT_TYPE_CODES['YAMLi18n'] = ('yml', 'yaml')
+CONTENT_TYPE_CODES['csv'] = ('csv', )
+CONTENT_TYPE_CODES['JSON'] = ('json', )
+CONTENT_TYPE_CODES['SRT'] = ('srt', )
+CONTENT_TYPE_CODES['md'] = ('md', 'text')
+
+ALLOWED_EXTENSIONS = OrderedDict(
+    {extension: k for k, extensions in CONTENT_TYPE_CODES.items() for extension in extensions}
+)
+
 
 class PatternNotValid(Exception):
     pass
+
+
+class FileExtensionNotAllowed(Exception):
+    """
+    The file extension doesn't match any file format allowed for this project
+    """
 
 
 def to_posix(filepath):
@@ -32,13 +58,13 @@ class TranslationFile(object):
         self.lang = lang
         self.fullpath = os.path.join(curdir, path)
 
-    # @property
-    # def extension(self):
-    #     try:
-    #         _, extension = self.name.split('.', 1)
-    #     except ValueError:
-    #         extension = None
-    #     return extension
+    @property
+    def extension(self):
+        try:
+            _, extension = self.name.split('.', 1)
+        except ValueError:
+            extension = None
+        return extension
 
     @property
     def posix_path(self):
@@ -199,3 +225,16 @@ def find_files_by_pattern(curpath, pattern):
                 log.warning('Language code "{}" not found in qordoba.'.format(repr(lang_map)))
 
             yield path
+
+
+def get_content_type_code(path):
+    """
+    :param qordoba.sources.TranslationFile path:
+    :return:
+    """
+    path_ext = path.extension
+    if path_ext not in ALLOWED_EXTENSIONS:
+        raise FileExtensionNotAllowed("File format `{}` not in allowed list of file formats: {}"
+                                      .format(path_ext, ', '.join(ALLOWED_EXTENSIONS)))
+
+    return ALLOWED_EXTENSIONS[path_ext]

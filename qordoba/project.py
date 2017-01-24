@@ -2,6 +2,8 @@ from __future__ import unicode_literals, print_function
 
 import json
 import functools
+
+import logging
 import requests
 
 from qordoba.utils import build_url
@@ -9,10 +11,11 @@ from qordoba.utils import build_url
 try:
     from json import JSONDecodeError
 except ImportError:
-    #pythont27
+    # pythont27
     class JSONDecodeError(ValueError):
         pass
 
+log = logging.getLogger('qordoba')
 
 API_URL = 'https://app.qordoba.com/api/'
 
@@ -126,8 +129,27 @@ def paginated(source_name):
         @functools.wraps(func)
         def _wrap(*args, **kwargs):
             return ResponsePaginatedResult(source_name, func, args, kwargs)
+
         return _wrap
+
     return wrapper
+
+
+def _debug_response(resp):
+    log.debug('Request({}):\nmethod: {}\nheaders: {}\nbody: {}'.format(
+        resp.request.url,
+        resp.request.method,
+        resp.request.headers,
+        resp.request.body or ''
+    ))
+
+    log.debug('Response({}):\nstatus_code: {}\nstatus: {}\nheaders: {}\nerror_text: {}'.format(
+        resp.url,
+        resp.status_code,
+        resp.reason,
+        resp.headers,
+        resp.text if resp.status_code >= 400 else ''
+    ))
 
 
 class ProjectAPI(object):
@@ -138,6 +160,7 @@ class ProjectAPI(object):
         headers = self.build_headers(custom_headers=headers)
 
         resp = requests.post(url, files=files, json=json, data=data, headers=headers, **kwargs)
+        _debug_response(resp)
         try:
             resp.raise_for_status()
         except requests.HTTPError:
@@ -149,6 +172,7 @@ class ProjectAPI(object):
         headers = self.build_headers(custom_headers=headers)
 
         resp = requests.get(url, headers=headers, **kwargs)
+        _debug_response(resp)
         try:
             resp.raise_for_status()
         except requests.HTTPError:
@@ -160,6 +184,7 @@ class ProjectAPI(object):
         headers = self.build_headers(custom_headers=headers)
 
         resp = requests.delete(url, json=json, headers=headers, **kwargs)
+        _debug_response(resp)
         try:
             resp.raise_for_status()
         except requests.HTTPError:
@@ -323,7 +348,7 @@ class ProjectAPI(object):
 
         query = {}
         if force:
-            query['update'] = True
+            query['update'] = 'true'
         # @todo bug in endpoint. Can't upload file without `update` query param
 
         upload_url = self.build_url(*params, **query)
@@ -333,6 +358,87 @@ class ProjectAPI(object):
         }
 
         resp = self.do_post(upload_url, files={'file': (str(file_name), stream, mimetype)}, data=values)
+        return resp.json()
+
+    def upload_anytype_file(self, stream, file_name, content_type_code,
+                            mimetype='application/octet-stream', force=False, **kwargs):
+        """
+        Upload file to qordoba app.
+
+        Example response:
+        {
+            "result":"success",
+            "upload_id":"3cada1ed-d837-4178-937a-a76887169aef_android_strings_sample_file987.xml",
+            "version_tags":[],
+            "file_name":"android_strings_sample_file987.xml",
+            "columns":null,
+            "duplicated_in_projects":[],
+            "docKey":null,
+            "excelRowsWithError":null
+        }
+
+        :param bool force: Force upload. Update existed file
+        :param stream: File Stream
+        :param str file_name: Unique file name.
+        :param str content_type_code:
+        :param mimetype: Request mimetype. By default application/octet-stream
+        :return: Upload result. Contains upload_id required to append file to the project
+        """
+        params = (
+            'organizations',
+            str(self._config['organization_id']),
+            'upload',
+            'uploadFile_anyType'
+        )
+        query = {
+            'projectId': self._config['project_id'],
+            'content_type_code': content_type_code
+        }
+
+        upload_url = self.build_url(*params, **query)
+
+        values = {
+            'file_names': json.dumps([])
+        }
+
+        resp = self.do_post(upload_url, files={'file': (str(file_name), stream, mimetype)}, data=values)
+        log.debug('Response body: {}'.format(resp.json()))
+        return resp.json()
+
+    def append_file(self, upload_id, file_name, source_columns=None, reference_columns=None, version_tag=None):
+        """
+        Attach uploaded file to qordoba project.
+
+        :param str upload_id: Unique upload ID provided by "upload_anytype_file" response
+        :param str file_name: Unique file name.
+        :param source_columns:
+        :param reference_columns:
+        :param str version_tag:
+        :param bool force:
+        :return:
+        """
+        params = (
+            'projects',
+            str(self._config['project_id']),
+            'append_files'
+        )
+
+        query = {}
+
+        payload = {
+            'id': upload_id,
+            'file_name': file_name,
+            'source_columns': source_columns or []
+        }
+        if reference_columns is not None:
+            payload['reference_columns'] = reference_columns
+        if version_tag is not None:
+            payload['version_tag'] = version_tag
+
+        upload_url = self.build_url(*params, **query)
+
+        resp = self.do_post(upload_url, json=[payload, ])
+        log.debug('Response body: {}'.format(resp.json()))
         return resp.json()
 
     def download_file(self, page_id, language_id, milestone=None):
@@ -375,6 +481,12 @@ class ProjectAPI(object):
         return self.do_get(download_url, stream=True)
 
     def download_files(self, page_ids, languages):
+        """
+        Download archive with translation for selected languages.
+        :param list page_ids:
+        :param list languages:
+        :return:
+        """
         params = (
             'projects',
             self._config['project_id'],

@@ -2,7 +2,7 @@ from __future__ import unicode_literals, print_function
 
 import logging
 
-from qordoba.commands.utils import prompt
+from qordoba.commands.utils import ask_bool
 from qordoba.languages import get_destination_languages
 from qordoba.project import ProjectAPI
 
@@ -28,7 +28,7 @@ def delete_command(curdir, config, file_name, force=False):
 
     if page_id:
         if not force:
-            if not prompt('Are you sure want resource `{}` and translations?'.format(file_name)):
+            if not ask_bool('Are you sure want delete resource `{}` and translations?'.format(file_name)):
                 return
 
         api.delete_page(page_id)

@@ -53,7 +53,9 @@ class BaseHandler(with_metaclass(ABCMeta)):
 
     def load_settings(self):
         config, loaded = load_settings(access_token=self.access_token,
-                                       project_id=self.project_id)
+                                       project_id=self.project_id,
+                                       organization_id=self.organization_id)
+        config.validate()
         if not loaded:
             log.info('Config not found...')
         return config
@@ -65,9 +67,11 @@ class BaseHandler(with_metaclass(ABCMeta)):
 
         parser = root.add_parser(**kwargs)
         parser.set_defaults(_handler=cls)
-        parser.add_argument('--project-id', required=False, type=str, dest='project_id', help='The ID of your Qordoba project',
+        parser.add_argument('--project-id', required=False, type=int, dest='project_id', help='The ID of your Qordoba project',
                             default=None)
         parser.add_argument('--access-token', required=False, type=str, dest='access_token', help='Your Qordoba access token',
+                            default=None)
+        parser.add_argument('--organization-id', required=False, type=int, dest='organization_id', help='The ID of your Qordoba project',
                             default=None)
         parser.add_argument('--traceback', dest='traceback', action='store_true')
         parser.add_argument('--debug', dest='debug', default=False, action='store_true')
@@ -84,6 +88,9 @@ class BaseHandler(with_metaclass(ABCMeta)):
 
 class InitHandler(BaseHandler):
     name = 'init'
+    help = """
+    Create your .qordoba.yml configuration file.
+    """
 
     def main(self):
         init_command(self._curdir, self.access_token, self.project_id, organization_id=self.organization_id,
@@ -111,6 +118,9 @@ class InitHandler(BaseHandler):
 
 class StatusHandler(BaseHandler):
     name = 'status'
+    help = """
+    Use the status command to show localization status in current project.
+    """
 
     def main(self):
         config = self.load_settings()
@@ -123,7 +133,9 @@ class StatusHandler(BaseHandler):
 
 class PullHandler(BaseHandler):
     name = 'pull'
-    help = 'Use the pull command to download locale files from the project.'
+    help = """
+    Use the pull command to download locale files from the project.
+    """
 
     @classmethod
     def register(cls, *args, **kwargs):
@@ -151,21 +163,27 @@ class PushHandler(BaseHandler):
     Use the push command to upload your local files to the project.
     """
 
+    def load_settings(self):
+        config = super(PushHandler, self).load_settings()
+        config.validate(keys=('organization_id', ))
+        return config
+
     @classmethod
     def register(cls, *args, **kwargs):
         parser = super(PushHandler, cls).register(*args, **kwargs)
         parser.add_argument('files', nargs='*', metavar='PATH', default=None, type=FilePathType(), help="")
-        parser.add_argument('-f', '--force', dest='force', action='store_true',
-                            help='Force to push translation files.')
         return parser
 
     def main(self):
         config = self.load_settings()
-        push_command(self._curdir, config, files=self.files, force=self.force)
+        push_command(self._curdir, config, files=self.files)
 
 
 class ListHandler(BaseHandler):
     name = 'ls'
+    help = """
+    Use the ls command to show all resources that have been initialized under the local project.
+    """
 
     def main(self):
         rows = [['ID', 'NAME', '#SEGMENTS', 'UPDATED_ON', 'STATUS'], ]
@@ -178,29 +196,24 @@ class ListHandler(BaseHandler):
 class DeleteHandler(BaseHandler):
     name = 'delete'
     help = """
-    Use the delete command to delete any resources and it's translations."
+    Use the delete command to delete any resources and it's translations.
     """
+
+    def load_settings(self):
+        config = super(DeleteHandler, self).load_settings()
+        config.validate(keys=('organization_id', ))
+        return config
 
     @classmethod
     def register(cls, *args, **kwargs):
         parser = super(DeleteHandler, cls).register(*args, **kwargs)
         parser.add_argument('file', default=(), type=str,
                             help="Define resource name or ID")
-        parser.add_argument('--organization-id', type=int, required=False, dest='organization_id',
-                            help='The ID of your Qordoba organization')
         parser.add_argument('-f', '--force', dest='force', action='store_true', help='Force delete resources.')
         return parser
 
     def main(self):
         config = self.load_settings()
-        # @todo only delete endpoint use organization id.
-        #  Didn't find how to get organization ID from project info
-        if not config.get('organization_id', None):
-            if not self.organization_id:
-                raise argparse.ArgumentTypeError('The following argument are required: --organization-id')
-            else:
-                config['organization_id'] = self.organization_id
-
         delete_command(self._curdir, config, self.file, force=self.force)
 
 

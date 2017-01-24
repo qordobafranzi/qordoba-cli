@@ -60,7 +60,9 @@ def pull_command(curdir, config, force=False, languages=(), download_ss=False, *
                 milestone = page_status['status']['id']
                 log.debug('Selected status for page `{}` - {}'.format(page_status['id'], page_status['status']['name']))
 
-            target_path = create_target_path_by_pattern(curdir, language, pattern=pattern, source_name=page_status['name'], content_type_code=page_status['content_type_code'])
+            target_path = create_target_path_by_pattern(curdir, language, pattern=pattern,
+                                                        source_name=page_status['name'],
+                                                        content_type_code=page_status['content_type_code'])
             if os.path.exists(target_path.native_path) and not force:
                 log.warning('Translation file is already exist. `{}`'.format(target_path.native_path))
 
@@ -72,12 +74,10 @@ def pull_command(curdir, config, force=False, languages=(), download_ss=False, *
             with open(target_path.native_path, 'wb') as f:
                 shutil.copyfileobj(res.raw, f)
 
-            log.info('Downloaded translation file `{}` for source `{}` and language `{}`'.format(target_path.native_path,
-                                                                                                 page_status['display_name'],
-                                                                                                 language.code))
+            log.info('Downloaded translation file `{}` for source `{}` and language `{}`'
+                     .format(target_path.native_path,
+                             page_status['display_name'],
+                             language.code))
 
         if not is_started:
             log.info('Nothing to download for language `{}`'.format(language.code))
-
-
-

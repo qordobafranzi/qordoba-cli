@@ -44,10 +44,12 @@ class SettingsDict(dict):
         if validate:
             self.validate()
 
-    def validate(self):
-        for key in ('project_id', 'access_token', ):
+    def validate(self, keys=('project_id', 'access_token')):
+        for key in keys:
             try:
-                self[key]
+                v = self[key]
+                if v is None:
+                    raise KeyError
             except KeyError:
                 raise SettingsValidationError(
                     """{} param is required. Please provide it by argument or in config file.""".format(key))

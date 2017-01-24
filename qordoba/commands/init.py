@@ -25,6 +25,5 @@ def init_command(curpath, access_token, project_id, organization_id=None, force=
     log.info('Checking organization and project...')
 
     project = api.get_project()
-    init_language_storage(api)
 
     save_settings(config)
