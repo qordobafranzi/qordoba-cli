@@ -5,13 +5,21 @@ import os
 import shutil
 from argparse import ArgumentTypeError
 
-from qordoba.commands.utils import mkdirs
+from qordoba.commands.utils import mkdirs, ask_select, ask_question
 from qordoba.languages import get_destination_languages, init_language_storage, normalize_language
 from qordoba.project import ProjectAPI, PageStatus
 from qordoba.settings import get_pull_pattern
 from qordoba.sources import create_target_path_by_pattern
 
 log = logging.getLogger('qordoba')
+
+
+class FileUpdateOptions(object):
+    skip = 'Skip'
+    replace = 'Replace'
+    new_name = 'Set new filename'
+
+    all = skip, replace, new_name
 
 
 def validate_languges_input(languages, project_languages):
@@ -27,7 +35,7 @@ def validate_languges_input(languages, project_languages):
     return selected_langs
 
 
-def pull_command(curdir, config, force=False, languages=(), download_ss=False, **kwargs):
+def pull_command(curdir, config, force=False, languages=(), in_progress=False, **kwargs):
     api = ProjectAPI(config)
     init_language_storage(api)
     project = api.get_project()
@@ -40,7 +48,7 @@ def pull_command(curdir, config, force=False, languages=(), download_ss=False, *
     pattern = get_pull_pattern(config, default=None)
 
     status_filter = [PageStatus.enabled, ]
-    if download_ss is False:
+    if in_progress is False:
         log.debug('Pull only completed translations.')
         status_filter = [PageStatus.completed, ]
 
@@ -56,15 +64,25 @@ def pull_command(curdir, config, force=False, languages=(), download_ss=False, *
                 language.code,
             ))
             milestone = None
-            if download_ss:
+            if in_progress:
                 milestone = page_status['status']['id']
                 log.debug('Selected status for page `{}` - {}'.format(page_status['id'], page_status['status']['name']))
 
             target_path = create_target_path_by_pattern(curdir, language, pattern=pattern,
                                                         source_name=page_status['name'],
                                                         content_type_code=page_status['content_type_code'])
+
+
             if os.path.exists(target_path.native_path) and not force:
                 log.warning('Translation file is already exist. `{}`'.format(target_path.native_path))
+                answer = ask_select(FileUpdateOptions.all, prompt='Choice: ')
+                if answer == FileUpdateOptions.skip:
+                    log.info('Donwload translation file `{}` skipped.'.format(target_path.native_path))
+                    continue
+                elif answer == FileUpdateOptions.new_name:
+                    while os.path.exists(target_path.native_path):
+                        target_path = ask_question('Set new filename: ', answer_type=target_path.replace)
+                # pass to replace file
 
             res = api.download_file(page_status['id'], language.id, milestone=milestone)
             res.raw.decode_content = True  # required to decompress content

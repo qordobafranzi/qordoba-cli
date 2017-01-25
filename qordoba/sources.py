@@ -56,6 +56,7 @@ class TranslationFile(object):
         self.relpath = path
         self.name = os.path.basename(path)
         self.lang = lang
+        self._curdir = curdir
         self.fullpath = os.path.join(curdir, path)
 
     @property
@@ -87,6 +88,16 @@ class TranslationFile(object):
 
     def __str__(self):
         return self.name
+
+    def replace(self, name):
+        """
+        Replace file name. Create new TranslationPath
+        :param str name:
+        :rtype: qordoba.sources.TranslationPath
+        """
+        new_path = os.path.join(os.path.dirname(self.relpath), name)
+
+        return self.__class__(new_path, self.lang, self._curdir)
 
 
 def validate_path(curdir, path, lang):

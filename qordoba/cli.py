@@ -140,7 +140,8 @@ class PullHandler(BaseHandler):
     @classmethod
     def register(cls, *args, **kwargs):
         parser = super(PullHandler, cls).register(*args, **kwargs)
-        parser.add_argument('-ss', dest='download_ss', action='store_true', help='Allow to download the files with smartsuggest/TM')
+        parser.add_argument('--in-progress', dest='in_progress', action='store_true',
+                            help='Allow to download not completed translations')
 
         parser.add_argument('-l', '--languages', dest='languages', nargs='+', type=CommaSeparatedSet(),
                             help="Option to work only on specific (comma-separated) languages")
@@ -154,7 +155,7 @@ class PullHandler(BaseHandler):
         if isinstance(self.languages, (list, tuple, set)):
             languages.extend(self.languages)
         pull_command(self._curdir, config, languages=set(itertools.chain(*languages)),
-                     download_ss=self.download_ss, force=self.force)
+                     in_progress=self.in_progress, force=self.force)
 
 
 class PushHandler(BaseHandler):

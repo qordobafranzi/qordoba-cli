@@ -61,7 +61,7 @@ def ask_bool(question='[Y/n]?'):
     return answer in yes
 
 
-def ask_question(question, answer_type=str):
+def ask_question(question, answer_type=str, exceptions=(TypeError, )):
     """
     Ask user a question in intercative mode and wait for answer.
     """
@@ -74,10 +74,11 @@ def ask_question(question, answer_type=str):
         try:
             answer = answer_type(answer)
             valid = True
-        except TypeError:
+        except exceptions:
             question = 'Try again:'
 
     return answer
+
 
 def mkdirs(path):
     try:
