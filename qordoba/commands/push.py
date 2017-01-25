@@ -31,29 +31,36 @@ def select_version_tag(file_name, version_tags):
     return version_tag
 
 
-def upload_file(api, path, **kwargs):
+def upload_file(api, path, version=None, **kwargs):
     log.info('Uploading {}'.format(path.native_path))
 
     file_name = path.unique_name
     content_type_code = get_content_type_code(path)
-    version_tag = None
+    version_tag = version
 
     with open(path.native_path, 'rb') as f:
         resp = api.upload_anytype_file(f, file_name, content_type_code, **kwargs)
     log.debug('File `{}` uploaded. Name - `{}`. Adding to the project...'.format(path.native_path, file_name))
 
     if resp.get('version_tags', ()):
-        version_tag = select_version_tag(file_name, resp.get('version_tags'))
+        if version_tag is None or version_tag in resp.get('version_tags'):
+            version_tag = select_version_tag(file_name, resp.get('version_tags'))
 
     resp = api.append_file(resp['upload_id'], file_name, version_tag=version_tag, **kwargs)
 
     log.info('Uploaded {} successfully as {}'.format(path.native_path, file_name))
 
 
-def update_file(api, path, remote_file):
-    log.info('Updating {} with ID({})'.format(path.unique_name, remote_file['page_id']))
-
+def update_file(api, path, remote_files, version=None):
     file_name = path.unique_name
+
+    log.info('Updating {}'.format(path.unique_name))
+    if version:
+        remote_file = next((f for f in remote_files if f.get('version_tag', None) == version), None)
+        if not remote_file:
+            raise FilesNotFound('File {} with version {} not found'.format(file_name, version))
+    else:
+        remote_file = remote_files[0]
 
     with open(path.native_path, 'rb') as f:
         resp = api.update_upload_anyType_file(f, file_name, remote_file['page_id'])
@@ -63,7 +70,7 @@ def update_file(api, path, remote_file):
     log.info('Updated {} successfully.'.format(file_name))
 
 
-def push_command(curdir, config, update=False, files=()):
+def push_command(curdir, config, update=False, version=None, files=()):
     api = ProjectAPI(config)
     init_language_storage(api)
 
@@ -83,9 +90,9 @@ def push_command(curdir, config, update=False, files=()):
 
         file_name = path.unique_name
 
-        remote_file_page = api.page_search(language_id=lang.id, search_string=file_name, limit=1).get_one()
+        remote_file_pages = list(api.page_search(language_id=lang.id, search_string=file_name))
 
-        if remote_file_page and update:
-            update_file(api, path, remote_file_page)
+        if remote_file_pages and update:
+            update_file(api, path, remote_file_pages, version=version)
         else:
-            upload_file(api, path)
+            upload_file(api, path, version=version)
