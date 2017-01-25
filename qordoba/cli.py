@@ -173,11 +173,12 @@ class PushHandler(BaseHandler):
     def register(cls, *args, **kwargs):
         parser = super(PushHandler, cls).register(*args, **kwargs)
         parser.add_argument('files', nargs='*', metavar='PATH', default=None, type=FilePathType(), help="")
+        parser.add_argument('--update', dest='update', action='store_true', help="Force to update file.")
         return parser
 
     def main(self):
         config = self.load_settings()
-        push_command(self._curdir, config, files=self.files)
+        push_command(self._curdir, config, update=self.update, files=self.files)
 
 
 class ListHandler(BaseHandler):

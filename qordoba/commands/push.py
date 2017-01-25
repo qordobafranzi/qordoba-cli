@@ -4,7 +4,7 @@ import logging
 import os
 
 from qordoba.commands.utils import ask_question
-from qordoba.languages import get_source_language, init_language_storage
+from qordoba.languages import get_source_language, init_language_storage, get_destination_languages
 from qordoba.project import ProjectAPI
 from qordoba.settings import get_push_pattern
 from qordoba.sources import find_files_by_pattern, validate_path, validate_push_pattern, get_content_type_code
@@ -31,7 +31,7 @@ def select_version_tag(file_name, version_tags):
     return version_tag
 
 
-def upload_file(api, project, path, **kwargs):
+def upload_file(api, path, **kwargs):
     log.info('Uploading {}'.format(path.native_path))
 
     file_name = path.unique_name
@@ -47,10 +47,23 @@ def upload_file(api, project, path, **kwargs):
 
     resp = api.append_file(resp['upload_id'], file_name, version_tag=version_tag, **kwargs)
 
-    log.info('Uploaded {} successfully'.format(path.native_path))
+    log.info('Uploaded {} successfully as {}'.format(path.native_path, file_name))
 
 
-def push_command(curdir, config, files=()):
+def update_file(api, path, remote_file):
+    log.info('Updating {} with ID({})'.format(path.unique_name, remote_file['page_id']))
+
+    file_name = path.unique_name
+
+    with open(path.native_path, 'rb') as f:
+        resp = api.update_upload_anyType_file(f, file_name, remote_file['page_id'])
+
+    resp = api.apply_upload_file(resp['id'], remote_file['page_id'])
+
+    log.info('Updated {} successfully.'.format(file_name))
+
+
+def push_command(curdir, config, update=False, files=()):
     api = ProjectAPI(config)
     init_language_storage(api)
 
@@ -63,8 +76,16 @@ def push_command(curdir, config, files=()):
 
     project = api.get_project()
     source_lang = get_source_language(project)
+    lang = next(get_destination_languages(project))
 
     for file in files:
         path = validate_path(curdir, file, source_lang)
 
-        upload_file(api, project, path)
+        file_name = path.unique_name
+
+        remote_file_page = api.page_search(language_id=lang.id, search_string=file_name, limit=1).get_one()
+
+        if remote_file_page and update:
+            update_file(api, path, remote_file_page)
+        else:
+            upload_file(api, path)

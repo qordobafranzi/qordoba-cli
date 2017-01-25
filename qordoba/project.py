@@ -168,6 +168,18 @@ class ProjectAPI(object):
         else:
             return resp
 
+    def do_put(self, url, files=None, json=None, data=None, headers=None, **kwargs):
+        headers = self.build_headers(custom_headers=headers)
+
+        resp = requests.put(url, files=files, json=json, data=data, headers=headers, **kwargs)
+        _debug_response(resp)
+        try:
+            resp.raise_for_status()
+        except requests.HTTPError:
+            raise exception_from_response(resp)
+        else:
+            return resp
+
     def do_get(self, url, headers=None, **kwargs):
         headers = self.build_headers(custom_headers=headers)
 
@@ -402,6 +414,57 @@ class ProjectAPI(object):
         }
 
         resp = self.do_post(upload_url, files={'file': (str(file_name), stream, mimetype)}, data=values)
+        log.debug('Response body: {}'.format(resp.json()))
+        return resp.json()
+
+    def update_upload_anyType_file(self, stream, file_name, file_id, mimetype='application/octet-stream'):
+        """
+
+        :param stream: File Stream
+        :param str file_name: Unique file name.
+        :param int file_id: File ID to replace
+        :param mimetype: Request mimetype. By default application/octet-stream
+        :return: Upload result. Contains upload_id required to append file to the project
+        """
+        params = (
+            'projects',
+            str(self._config['project_id']),
+            'files',
+            str(file_id),
+            'update',
+            'upload'
+        )
+
+        upload_url = self.build_url(*params)
+
+        resp = self.do_post(upload_url, files={'file': (str(file_name), stream, mimetype)})
+        log.debug('Response body: {}'.format(resp.json()))
+        return resp.json()
+
+    def apply_upload_file(self, upload_id, file_id):
+        """
+
+        :param str upload_id: Unique upload ID provided by "update_upload_anyType_file" response
+        :param int file_id: File ID to replace
+        :return:
+        """
+
+        params = (
+            'projects',
+            str(self._config['project_id']),
+            'files',
+            str(file_id),
+            'update',
+            'apply'
+        )
+
+        payload = {
+            'new_file_id': upload_id
+        }
+
+        upload_url = self.build_url(*params)
+
+        resp = self.do_put(upload_url, json=payload)
         log.debug('Response body: {}'.format(resp.json()))
         return resp.json()
 
