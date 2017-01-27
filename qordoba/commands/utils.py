@@ -8,14 +8,9 @@ import os
 log = logging.getLogger('qordoba')
 
 PY3 = sys.version_info[0] == 3
-if PY3:
-    cli_input = input
-else:
-    cli_input = raw_input
 
 
-
-def ask_select(question_list, prompt='Select:'):
+def ask_select(question_list, prompt='Select: '):
     """
 
     :param question_list: Excpect list of tuples with 2 elements - ID and TEXT
@@ -38,11 +33,45 @@ def ask_select(question_list, prompt='Select:'):
     answer = None
     while answer not in valid_answers:
         try:
-            answer = int(cli_input(promt_message))
+            answer = int(ask_simple(promt_message))
         except (TypeError, ValueError):
             promt_message = prompt
 
     return question_list[answer - 1]
+
+
+def ask_select_multiple(question_list, prompt="Select: "):
+    """
+
+    :param question_list: Expect list of tuples with 2 elements - ID and TEXT
+    :param prompt: First message.
+    :return: list of answers ID and TEXT
+    """
+
+    valid_answers = set()
+    question_list_text = []
+    for el_num, question in enumerate(question_list, start=1):
+        try:
+            question_id, text = question
+        except ValueError:
+            text = question
+
+        question_list_text.append('{}) {}'.format(el_num, text))
+        valid_answers.add(el_num)
+
+    promt_message = '\n'.join(question_list_text + [prompt, ])
+    answer = None
+    while not answer or not valid_answers.issuperset(answer):
+        answer = ask_simple(promt_message)
+        # convert values splitted by space or command
+        try:
+            answer = set(map(lambda x: int(x.strip()), answer.split(',') if ',' in answer else answer.split(' ')))
+        except (TypeError, ValueError):
+            answer = None
+
+        promt_message = prompt
+
+    return [q for ix, q in enumerate(question_list) if ix in answer]
 
 
 def ask_bool(question='[Y/n]?'):
@@ -55,10 +84,19 @@ def ask_bool(question='[Y/n]?'):
 
     answer = None
     while answer not in valid:
-        answer = cli_input(question)
+        answer = ask_simple(question)
         question = '[Y/n]'
 
     return answer in yes
+
+
+def ask_simple(question):
+    if PY3:
+        answer = input(question)
+    else:
+        answer = raw_input(question)
+
+    return answer
 
 
 def ask_question(question, answer_type=str, exceptions=(TypeError, )):
@@ -70,7 +108,7 @@ def ask_question(question, answer_type=str, exceptions=(TypeError, )):
     answer = None
 
     while not valid:
-        answer = cli_input(question)
+        answer = ask_simple(question)
         try:
             answer = answer_type(answer)
             valid = True

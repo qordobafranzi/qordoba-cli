@@ -13,23 +13,31 @@ log = logging.getLogger('qordoba')
 DEFAULT_PATTERN = '<language_code><extension>'
 
 CONTENT_TYPE_CODES = OrderedDict()
-CONTENT_TYPE_CODES['excel'] = ('xlsx', )
+CONTENT_TYPE_CODES['excel'] = ('xlsx',)
 CONTENT_TYPE_CODES['xliff'] = ('xliff', 'xlf')
 CONTENT_TYPE_CODES['XLIFF1.2'] = ('xliff', 'xlf')
-CONTENT_TYPE_CODES['xmlAndroid'] = ('xml', )
-CONTENT_TYPE_CODES['macStrings'] = ('strings', )
+CONTENT_TYPE_CODES['xmlAndroid'] = ('xml',)
+CONTENT_TYPE_CODES['macStrings'] = ('strings',)
 CONTENT_TYPE_CODES['PO'] = ('po',)
-CONTENT_TYPE_CODES['propertiesJava'] = ('properties', )
+CONTENT_TYPE_CODES['propertiesJava'] = ('properties',)
 CONTENT_TYPE_CODES['YAML'] = ('yml', 'yaml')
 CONTENT_TYPE_CODES['YAMLi18n'] = ('yml', 'yaml')
-CONTENT_TYPE_CODES['csv'] = ('csv', )
-CONTENT_TYPE_CODES['JSON'] = ('json', )
-CONTENT_TYPE_CODES['SRT'] = ('srt', )
+CONTENT_TYPE_CODES['csv'] = ('csv',)
+CONTENT_TYPE_CODES['JSON'] = ('json',)
+CONTENT_TYPE_CODES['SRT'] = ('srt',)
 CONTENT_TYPE_CODES['md'] = ('md', 'text')
 
 ALLOWED_EXTENSIONS = OrderedDict(
     {extension: k for k, extensions in CONTENT_TYPE_CODES.items() for extension in extensions}
 )
+
+MIMETYPES = {
+    'excel': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+}
+
+
+def get_mimetype(content_type):
+    return MIMETYPES.get(content_type, 'application/octet-stream')
 
 
 class PatternNotValid(Exception):
@@ -129,7 +137,10 @@ class LanguagePatternVariables(object):
     all = language_code, language_name, language_name_cap, language_name_allcap, language_lang_code
 
 
-push_pattern_validate_regexp = re.compile('\<({})\>'.format('|'.join((LanguagePatternVariables.language_code, LanguagePatternVariables.language_lang_code))))
+push_pattern_validate_regexp = re.compile(
+    '\<({})\>'
+        .format('|'.join((LanguagePatternVariables.language_code, LanguagePatternVariables.language_lang_code)))
+)
 pull_pattern_validate_regexp = re.compile('\<({})\>'.format('|'.join(LanguagePatternVariables.all)))
 
 
@@ -144,7 +155,8 @@ def validate_push_pattern(pattern):
     expression_re = pattern_re.replace(re.escape('<language_code>'), '(?P<language_code>[\w]{2}\-[\w]{2})')
 
     lang_pattern_escaped = re.escape('<{}>'.format(LanguagePatternVariables.language_lang_code))
-    expression_re = expression_re.replace(lang_pattern_escaped, '(?P<{}>[\w]*)'.format(LanguagePatternVariables.language_lang_code))
+    expression_re = expression_re.replace(lang_pattern_escaped,
+                                          '(?P<{}>[\w]*)'.format(LanguagePatternVariables.language_lang_code))
 
     expression_re = re.compile('^{}$'.format(expression_re), flags=re.IGNORECASE)
     return expression_re

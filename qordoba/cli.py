@@ -146,7 +146,7 @@ class PullHandler(BaseHandler):
         parser.add_argument('-l', '--languages', dest='languages', nargs='+', type=CommaSeparatedSet(),
                             help="Option to work only on specific (comma-separated) languages")
         parser.add_argument('-f', '--force', dest='force', action='store_true',
-                            help='Force to update local translation files.')
+                            help='Force to update local translation files. Do not ask approval.')
         return parser
 
     def main(self):

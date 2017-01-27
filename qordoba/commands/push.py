@@ -1,13 +1,13 @@
 from __future__ import unicode_literals, print_function
 
 import logging
-import os
 
-from qordoba.commands.utils import ask_question
+from qordoba.commands.utils import ask_question, ask_select_multiple, ask_select
 from qordoba.languages import get_source_language, init_language_storage, get_destination_languages
 from qordoba.project import ProjectAPI
 from qordoba.settings import get_push_pattern
-from qordoba.sources import find_files_by_pattern, validate_path, validate_push_pattern, get_content_type_code
+from qordoba.sources import find_files_by_pattern, validate_path, validate_push_pattern, get_content_type_code, \
+    get_mimetype
 
 log = logging.getLogger('qordoba')
 
@@ -23,12 +23,66 @@ def select_version_tag(file_name, version_tags):
              .format(file_name, ', '.join(version_tags)))
 
     version_tag = None
-    while version_tag is None:
+    while not version_tag:
         user_tag = ask_question('VersionTag: ')
         if user_tag not in version_tags:
             version_tag = user_tag
 
     return version_tag
+
+
+def select_source_columns(columns):
+    """
+    Ask user to set source columns or reference column for csv/xlsx files.
+    :param columns: column list from response
+    :return: list of column IDs
+    """
+    if len(columns) == 1:
+        return {
+            'source_columns': [columns[0]['id'], ]
+        }
+
+    log.info('Please select columns as sources: ')
+
+    reference_columns = None
+
+    format_select = {
+        True: '{} (empty)',
+        False: '{}'
+    }
+
+    columns_all = dict()
+
+    question_list = []
+    for ix, column in enumerate(columns, start=1):
+        column_name = format_select[column['empty']].format(column['name'])
+        column_id = column['id']
+        columns_all[column_id] = column_name
+
+        question_list.append((column_id, column_name))
+
+    answers = ask_select_multiple(question_list, 'Set: ')
+    source_columns = [column_id for column_id, _ in answers]
+
+    left_columns = set(columns_all.keys()).difference(set(source_columns))
+    if left_columns:
+        log.info('Please select column as reference: ')
+
+        question_list = [(cid, name) for cid, name in columns_all.items() if cid in left_columns]
+        question_list.append((-1, 'Skip'))
+        answer_id, _ = ask_select(question_list)
+
+        if answer_id != -1:
+            reference_columns = answer_id
+
+    if reference_columns is not None:
+        # @todo issue in qordoba API. always add reference_column as source column
+        source_columns.append(reference_columns)
+
+    return {
+        'reference_columns': reference_columns,
+        'source_columns': source_columns
+    }
 
 
 def upload_file(api, path, version=None, **kwargs):
@@ -39,12 +93,16 @@ def upload_file(api, path, version=None, **kwargs):
     version_tag = version
 
     with open(path.native_path, 'rb') as f:
-        resp = api.upload_anytype_file(f, file_name, content_type_code, **kwargs)
+        resp = api.upload_anytype_file(f, file_name, content_type_code, mimetype=get_mimetype(content_type_code),
+                                       **kwargs)
     log.debug('File `{}` uploaded. Name - `{}`. Adding to the project...'.format(path.native_path, file_name))
 
     if resp.get('version_tags', ()):
         if version_tag is None or version_tag in resp.get('version_tags'):
             version_tag = select_version_tag(file_name, resp.get('version_tags'))
+
+    if resp.get('columns'):
+        kwargs.update(select_source_columns(resp.get('columns')))
 
     resp = api.append_file(resp['upload_id'], file_name, version_tag=version_tag, **kwargs)
 
