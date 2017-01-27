@@ -3,7 +3,7 @@
 from codecs import open
 from setuptools import setup
 
-__version__ = '0.0.6-dev'
+__version__ = '0.0.8-dev'
 
 
 packages = [
@@ -18,7 +18,7 @@ def get_requirements(filename):
 setup(
     name="qordoba",
     version=__version__,
-    entry_points={'console_scripts': ['qor=qordoba.cli:main']},
+    entry_points={'console_scripts': ['qor=qordoba.cli:main', 'qordoba=qordoba.cli:main']},
     description="Qordoba command line tool",
     url="https://www.qordoba.com",
     dependency_links=[],
