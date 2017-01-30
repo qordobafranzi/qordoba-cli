@@ -71,7 +71,7 @@ def ask_select_multiple(question_list, prompt="Select: "):
 
         promt_message = prompt
 
-    return [q for ix, q in enumerate(question_list) if ix in answer]
+    return [q for ix, q in enumerate(question_list, start=1) if ix in answer]
 
 
 def ask_bool(question='[Y/n]?'):
@@ -113,7 +113,7 @@ def ask_question(question, answer_type=str, exceptions=(TypeError, )):
             answer = answer_type(answer)
             valid = True
         except exceptions:
-            question = 'Try again:'
+            pass
 
     return answer
 

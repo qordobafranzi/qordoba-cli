@@ -92,6 +92,7 @@ class ResponsePaginatedResult(object):
         self._total_result = result['meta']['paging']['total_results']
 
         self._next_offset += self._limit
+        return result[self._source_name]
 
     def has_next(self):
         return self._total_result is None or len(self._result) < self._total_result
@@ -104,8 +105,8 @@ class ResponsePaginatedResult(object):
             yield res
 
         while self.has_next():
-            self.request_next()
-            for res in self._result:
+            next_result = self.request_next()
+            for res in next_result:
                 yield res
 
     def filter_by(self, func):

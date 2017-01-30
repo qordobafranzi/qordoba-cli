@@ -6,6 +6,7 @@ import pytest
 from mock import MagicMock
 
 from qordoba.languages import init_language_storage
+from qordoba.settings import load_settings
 
 
 @pytest.fixture
@@ -47,6 +48,25 @@ def project_response(curdir):
     yield json.load(f)['project']
 
     f.close()
+
+
+@pytest.fixture
+def page_search_response(curdir):
+    root = os.path.abspath(curdir)
+    path = os.path.join(root, 'fixtures', 'page_search_response.json')
+
+    f = open(path, 'r')
+    yield json.load(f)
+
+    f.close()
+
+
+@pytest.fixture
+def config(monkeypatch, curdir):
+    root = os.path.abspath(curdir)
+    monkeypatch.setattr('qordoba.settings.SETTING_PATHS', (os.path.join(root, 'fixtures', '.qordoba.yml'), ))
+    return load_settings()
+
 
 
 @pytest.fixture
