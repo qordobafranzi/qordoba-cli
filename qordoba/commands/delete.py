@@ -28,7 +28,9 @@ def delete_command(curdir, config, file_name, force=False):
 
     if page_id:
         if not force:
-            if not ask_bool('Are you sure want delete resource `{}` and translations?'.format(file_name)):
+            if not ask_bool(
+                    'Are you sure you want to delete `{}` and all translations for this resource?'.format(file_name)
+            ):
                 return
 
         api.delete_page(page_id)

@@ -7,8 +7,6 @@ import yaml.parser
 
 log = logging.getLogger('qordoba')
 
-EMPTY = object()
-
 DEFAULT_SETTING_PATH = os.path.abspath(os.path.join(os.getcwd(), '.qordoba.yml'))
 
 SETTING_PATHS = (
@@ -98,25 +96,6 @@ def load_settings(**kwargs):
         settings = SettingsDict(**kwargs)
 
     return settings, loaded
-
-
-def init_settings(access_token, project_id, organization_id=None, force=False):
-    for path in SETTING_PATHS:
-        if os.path.exists(path):
-            if not force:
-                raise SettingsError('Config file already exist: {}'.format(path))
-
-    path = DEFAULT_SETTING_PATH
-
-    data = {
-        'access_token': access_token,
-        'project_id': project_id
-    }
-    dump_settings(path, data)
-
-    log.info('Config `{}` successfully saved.'.format(path))
-
-    return SettingsDict(path=path, **data)
 
 
 NOTDEFINED = object()

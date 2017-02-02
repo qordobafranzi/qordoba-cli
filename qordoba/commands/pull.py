@@ -14,6 +14,12 @@ from qordoba.sources import create_target_path_by_pattern
 log = logging.getLogger('qordoba')
 
 
+def format_file_name(page):
+    if page.get('version_tag'):
+        return '{} [{}]'.format(page['url'], page['version_tag'])
+    return page['url']
+
+
 class FileUpdateOptions(object):
     skip = 'Skip'
     replace = 'Replace'
@@ -60,7 +66,7 @@ def pull_command(curdir, config, force=False, languages=(), in_progress=False, *
             page_status = api.get_page_details(language.id, page['page_id'], )
 
             log.info('Downloading translation file for source `{}` and language `{}`'.format(
-                page_status['display_name'],
+                format_file_name(page),
                 language.code,
             ))
             milestone = None
@@ -77,7 +83,7 @@ def pull_command(curdir, config, force=False, languages=(), in_progress=False, *
                 log.warning('Translation file is already exist. `{}`'.format(target_path.native_path))
                 answer = ask_select(FileUpdateOptions.all, prompt='Choice: ')
                 if answer == FileUpdateOptions.skip:
-                    log.info('Donwload translation file `{}` skipped.'.format(target_path.native_path))
+                    log.info('Download translation file `{}` skipped.'.format(target_path.native_path))
                     continue
                 elif answer == FileUpdateOptions.new_name:
                     while os.path.exists(target_path.native_path):
@@ -94,7 +100,7 @@ def pull_command(curdir, config, force=False, languages=(), in_progress=False, *
 
             log.info('Downloaded translation file `{}` for source `{}` and language `{}`'
                      .format(target_path.native_path,
-                             page_status['display_name'],
+                             format_file_name(page),
                              language.code))
 
         if not is_started:

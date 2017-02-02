@@ -137,20 +137,23 @@ def paginated(source_name):
 
 
 def _debug_response(resp):
-    log.debug('Request({}):\nmethod: {}\nheaders: {}\nbody: {}'.format(
-        resp.request.url,
-        resp.request.method,
-        resp.request.headers,
-        resp.request.body or ''
-    ))
+    try:
+        log.debug('Request({}):\nmethod: {}\nheaders: {}\nbody: {}'.format(
+            resp.request.url,
+            resp.request.method,
+            resp.request.headers,
+            resp.request.body or ''
+        ))
 
-    log.debug('Response({}):\nstatus_code: {}\nstatus: {}\nheaders: {}\nerror_text: {}'.format(
-        resp.url,
-        resp.status_code,
-        resp.reason,
-        resp.headers,
-        resp.text if resp.status_code >= 400 else ''
-    ))
+        log.debug('Response({}):\nstatus_code: {}\nstatus: {}\nheaders: {}\nerror_text: {}'.format(
+            resp.url,
+            resp.status_code,
+            resp.reason,
+            resp.headers,
+            resp.text if resp.status_code >= 400 else ''
+        ))
+    except UnicodeDecodeError:
+        log.debug('Request debug was disabled because of unsupported terminal encoding')
 
 
 class ProjectAPI(object):
@@ -939,7 +942,7 @@ class ProjectAPI(object):
             body['title'] = search_string
 
         resp = self.do_post(page_url, json=body)
-        # @todo add pagination
+        log.debug('ResponseContent: {}'.format(resp.content))
         return resp.json()
 
     def delete_page(self, page_id):
