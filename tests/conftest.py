@@ -39,6 +39,8 @@ def mock_lang_storage(language_response):
     init_language_storage(api)
 
 
+
+
 @pytest.fixture
 def project_response(curdir):
     root = os.path.abspath(curdir)
@@ -67,6 +69,12 @@ def config(monkeypatch, curdir):
     monkeypatch.setattr('qordoba.settings.SETTING_PATHS', (os.path.join(root, 'fixtures', '.qordoba.yml'), ))
     return load_settings()
 
+
+@pytest.fixture
+def mock_input(monkeypatch):
+    input_mock = MagicMock()
+    monkeypatch.setattr('qordoba.commands.utils.ask_simple', input_mock)
+    return input_mock
 
 
 @pytest.fixture

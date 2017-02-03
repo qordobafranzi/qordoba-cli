@@ -1,0 +1,18 @@
+[
+  {
+    "term": "app.name",
+    "definition": "TODO List",
+    "context": "",
+    "term_plural": "",
+    "reference": "\/app\/modules\/views",
+    "comment": "Please don't change the name of the application"
+  },
+  {
+    "term": "app.login.text",
+    "definition": "Enter your credentials below to login",
+    "context": "",
+    "term_plural": "",
+    "reference": "\/app\/modules\/views",
+    "comment": ""
+  }
+]

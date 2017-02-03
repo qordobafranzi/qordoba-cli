@@ -1,15 +1,7 @@
 import pytest
-from mock import MagicMock
 
-from qordoba.commands.utils import ask_question, ask_bool, ask_select, ask_select_multiple
 from tests.assertions import assert_deep_equal
-
-
-@pytest.fixture
-def mock_input(monkeypatch):
-    input_mock = MagicMock()
-    monkeypatch.setattr('qordoba.commands.utils.ask_simple', input_mock)
-    return input_mock
+from qordoba.commands.utils import ask_question, ask_bool, ask_select, ask_select_multiple
 
 
 @pytest.mark.parametrize('question,answer,answer_type', [

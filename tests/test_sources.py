@@ -84,9 +84,6 @@ def test_create_target_path_by_pattern_invalid(invalid_pattern, projectdir):
     (PATTERN5, LANGUAGE_FR, to_native('folder3/strings.French')),
     (PATTERN6, LANGUAGE_FR, 'FRENCH.locale')
 ])
-def test_create_target_path_by_pattern(mock_lang_storage, pattern, target_language, expected, projectdir):
-    print(pattern, ' -> ', expected)
-    res = create_target_path_by_pattern(projectdir, target_language, pattern=pattern)
+def test_create_target_path_by_pattern(mock_lang_storage, pattern, target_language, expected):
+    res = create_target_path_by_pattern('', target_language, pattern=pattern)
     assert res.native_path == expected
-
-

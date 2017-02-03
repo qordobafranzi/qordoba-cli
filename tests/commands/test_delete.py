@@ -1,5 +1,5 @@
 import pytest
-from mock import MagicMock, patch, Mock
+from mock import MagicMock
 
 from qordoba.commands.delete import delete_command
 from qordoba.languages import get_destination_languages
@@ -8,8 +8,6 @@ from qordoba.project import ResponsePaginatedResult, QordobaResponseError
 
 @pytest.fixture
 def mock_api(monkeypatch):
-    # ProjectAPI.delete_page = Mock()
-    # ProjectAPI.get_project = Mock()
     api_mock = MagicMock()
     monkeypatch.setattr('qordoba.commands.delete.ProjectAPI', api_mock)
     return api_mock.return_value
@@ -76,5 +74,3 @@ def test_delete_response_not_found(mock_api, project_response, curdir):
 
     assert mock_api.get_project.call_count == 1
     mock_api.delete_page.assert_called_once_with(page_id)
-
-

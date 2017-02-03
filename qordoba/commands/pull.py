@@ -38,7 +38,7 @@ def validate_languges_input(languages, project_languages):
         raise ArgumentTypeError('Selected languages not configured in project as target languages: `{}`'
                                 .format(','.join((str(i) for i in not_valid))))
 
-    return selected_langs
+    return list(selected_langs)
 
 
 def pull_command(curdir, config, force=False, languages=(), in_progress=False, **kwargs):

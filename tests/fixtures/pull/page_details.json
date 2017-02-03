@@ -1,0 +1,38 @@
+{
+  "id" : 1,
+  "name" : "test.json",
+  "content_type" : "JSON",
+  "url" : "url-test.json",
+  "enabled" : true,
+  "published" : false,
+  "page_fully_loaded" : true,
+  "title" : "test.json",
+  "type" : "page",
+  "assignees" : [ {
+  "id" : 1624,
+  "client_id" : "1624",
+  "avatar" : null,
+  "account_status" : "signed_up",
+  "phone_number" : null,
+  "last_online" : 1483699344000
+  } ],
+  "preview" : "",
+  "strings" : 13,
+  "strings_in_tm" : 99,
+  "status" : {
+  "id" : 7952,
+  "project_id" : 3466,
+  "order" : 0,
+  "name" : "Editing"
+  },
+  "le_last_saved" : 1483643204000,
+  "root" : false,
+  "display_name" : "display-name-test.json",
+  "next_page" : {
+  "id" : 727299,
+  "name" : "test.json"
+  },
+  "update" : 1483643204000,
+  "created_at" : 1483643204000,
+  "content_type_code" : "JSON"
+}
