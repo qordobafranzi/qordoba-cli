@@ -5,7 +5,7 @@ from argparse import ArgumentTypeError
 try:
     from StringIO import StringIO
 except ImportError:
-    from io import StringIO
+    from io import BytesIO as StringIO
 
 import pytest
 import shutil
@@ -80,10 +80,11 @@ def page_search_paginated(page_search_response):
 def mock_change_dir(monkeypatch, curdir):
     root = os.path.abspath(curdir)
     chdir_path = os.path.join(root, 'fixtures', 'pull', 'temp')
+    shutil.rmtree(chdir_path, ignore_errors=True)
     os.mkdir(chdir_path)
     monkeypatch.chdir(chdir_path)
     yield chdir_path
-    shutil.rmtree(chdir_path, ignore_errors=True)
+    shutil.rmtree(chdir_path, ignore_errors=False)
 
 
 @pytest.fixture
@@ -114,7 +115,7 @@ def test_pull(mock_api, mock_change_dir,
     mock_api.get_project.return_value = project_response
     mock_api.page_search.return_value = page_search_paginated
     mock_api.get_page_details.return_value = page_details_response
-    mock_api.download_file.return_value.raw = StringIO('test')
+    mock_api.download_file.return_value.raw = StringIO(b'test')
 
     pull_command(mock_change_dir, {}, languages=('ru-ru',))
 
@@ -146,7 +147,7 @@ def test_pull_exists_skip(mock_api, mock_change_dir,
     mock_api.get_project.return_value = project_response
     mock_api.page_search.return_value = page_search_paginated
     mock_api.get_page_details.return_value = page_details_response
-    mock_api.download_file.return_value.raw = StringIO('test')
+    mock_api.download_file.return_value.raw = StringIO(b'test')
 
     pull_command(mock_change_dir, {}, languages=('ru-ru',))
 
@@ -177,7 +178,7 @@ def test_pull_exists_replace(mock_api, mock_change_dir,
     mock_api.get_project.return_value = project_response
     mock_api.page_search.return_value = page_search_paginated
     mock_api.get_page_details.return_value = page_details_response
-    mock_api.download_file.return_value.raw = StringIO('test')
+    mock_api.download_file.return_value.raw = StringIO(b'test')
 
     pull_command(mock_change_dir, {}, languages=('ru-ru',))
 
