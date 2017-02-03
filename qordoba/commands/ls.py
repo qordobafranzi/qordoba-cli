@@ -11,6 +11,31 @@ from qordoba.project import ProjectAPI
 log = logging.getLogger('qordoba')
 
 
+class FileStatus:
+    error = 'Error'
+    preparing = 'Preparing...'
+    completed = 'Completed'
+    enabled = 'Enabled'
+    disabled = 'Disabled'
+
+
+def get_status(page):
+    status = ''
+    if page.get('error_id'):
+        status = FileStatus.error
+    elif page.get('preparing'):
+        status = FileStatus.preparing
+    elif page.get('enabled') and page.get('completed'):
+        status = FileStatus.completed
+    elif page.get('enabled'):
+        status = FileStatus.enabled
+    elif not page.get('enabled'):
+        status = FileStatus.disabled
+
+    return status
+
+
+
 class ResultRow(namedtuple('_ResultRow', ('id', 'name', 'segments', 'updated_on', 'status'))):
     pass
 
@@ -33,5 +58,5 @@ def ls_command(config):
             page_name,
             page['segment_count'],
             datetime.fromtimestamp(page['update'] / 1e3),
-            'Enabled' if page.get('enabled') else ''
+            get_status(page)
         )
