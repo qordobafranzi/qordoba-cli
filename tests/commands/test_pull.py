@@ -1,5 +1,6 @@
 import json
 import os
+import tempfile
 from argparse import ArgumentTypeError
 
 try:
@@ -77,19 +78,15 @@ def page_search_paginated(page_search_response):
 
 
 @pytest.fixture
-def mock_change_dir(monkeypatch, curdir):
-    root = os.path.abspath(curdir)
-    chdir_path = os.path.join(root, 'fixtures', 'pull', 'temp')
-    shutil.rmtree(chdir_path, ignore_errors=True)
-    os.mkdir(chdir_path)
-    monkeypatch.chdir(chdir_path)
-    yield chdir_path
-    shutil.rmtree(chdir_path, ignore_errors=False)
+def mock_tmp_dir(monkeypatch):
+    curdir = tempfile.mkdtemp()
+    monkeypatch.chdir(curdir)
+    yield curdir
 
 
 @pytest.fixture
-def create_test_file(mock_change_dir):
-    with open(os.path.join(mock_change_dir, 'ru-ru.json'), 'w') as f:
+def create_test_file(mock_tmp_dir):
+    with open(os.path.join(mock_tmp_dir, 'ru-ru.json'), 'w') as f:
         f.write('empty')
 
 
@@ -105,7 +102,7 @@ def test_validate_language_input_error(mock_lang_storage, lang_fr):
         validate_languges_input(('ru',), (lang_fr,))
 
 
-def test_pull(mock_api, mock_change_dir,
+def test_pull(mock_api, mock_tmp_dir,
               project_response,
               page_search_paginated,
               language_response,
@@ -117,7 +114,7 @@ def test_pull(mock_api, mock_change_dir,
     mock_api.get_page_details.return_value = page_details_response
     mock_api.download_file.return_value.raw = StringIO(b'test')
 
-    pull_command(mock_change_dir, {}, languages=('ru-ru',))
+    pull_command(mock_tmp_dir, {}, languages=('ru-ru',))
 
     mock_api.get_project.assert_called_once()
 
@@ -130,10 +127,10 @@ def test_pull(mock_api, mock_change_dir,
     mock_api.download_file.assert_called_once()
     mock_api.download_file.assert_called_with(page_details_response['id'], lang_ru.id, milestone=None)
 
-    assert os.path.exists(os.path.join(mock_change_dir, 'ru-ru.json'))
+    assert os.path.exists(os.path.join(mock_tmp_dir, 'ru-ru.json'))
 
 
-def test_pull_exists_skip(mock_api, mock_change_dir,
+def test_pull_exists_skip(mock_api, mock_tmp_dir,
                      create_test_file,
                      mock_input,
                      project_response,
@@ -149,7 +146,7 @@ def test_pull_exists_skip(mock_api, mock_change_dir,
     mock_api.get_page_details.return_value = page_details_response
     mock_api.download_file.return_value.raw = StringIO(b'test')
 
-    pull_command(mock_change_dir, {}, languages=('ru-ru',))
+    pull_command(mock_tmp_dir, {}, languages=('ru-ru',))
 
     mock_api.get_project.assert_called_once()
 
@@ -161,10 +158,10 @@ def test_pull_exists_skip(mock_api, mock_change_dir,
 
     mock_api.download_file.assert_not_called()
 
-    assert os.path.exists(os.path.join(mock_change_dir, 'ru-ru.json'))
+    assert os.path.exists(os.path.join(mock_tmp_dir, 'ru-ru.json'))
 
 
-def test_pull_exists_replace(mock_api, mock_change_dir,
+def test_pull_exists_replace(mock_api, mock_tmp_dir,
                      create_test_file,
                      mock_input,
                      project_response,
@@ -180,7 +177,7 @@ def test_pull_exists_replace(mock_api, mock_change_dir,
     mock_api.get_page_details.return_value = page_details_response
     mock_api.download_file.return_value.raw = StringIO(b'test')
 
-    pull_command(mock_change_dir, {}, languages=('ru-ru',))
+    pull_command(mock_tmp_dir, {}, languages=('ru-ru',))
 
     mock_api.get_project.assert_called_once()
 
@@ -193,4 +190,4 @@ def test_pull_exists_replace(mock_api, mock_change_dir,
     mock_api.download_file.assert_called_once()
     mock_api.download_file.assert_called_with(page_details_response['id'], lang_ru.id, milestone=None)
 
-    assert os.path.exists(os.path.join(mock_change_dir, 'ru-ru.json'))
+    assert os.path.exists(os.path.join(mock_tmp_dir, 'ru-ru.json'))
