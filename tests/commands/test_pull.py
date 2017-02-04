@@ -78,10 +78,12 @@ def page_search_paginated(page_search_response):
 
 
 @pytest.fixture
-def mock_tmp_dir(monkeypatch):
-    curdir = tempfile.mkdtemp()
-    monkeypatch.chdir(curdir)
-    yield curdir
+def mock_tmp_dir(curdir):
+    tmp_curdir = tempfile.mkdtemp()
+    os.chdir(tmp_curdir)
+    yield tmp_curdir
+    os.chdir(curdir)
+    shutil.rmtree(tmp_curdir)
 
 
 @pytest.fixture

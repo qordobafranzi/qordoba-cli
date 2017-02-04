@@ -121,7 +121,8 @@ def validate_path(curdir, path, lang):
     """
     lang = normalize_language(lang)
     if not isinstance(path, TranslationFile):
-        path = os.path.relpath(path, curdir)
+        if os.path.isabs(path):
+            path = os.path.relpath(path, curdir)
         path = TranslationFile(path, lang, curdir)
 
     return path
