@@ -10,7 +10,7 @@ from qordoba.utils import python_2_unicode_compatible
 
 log = logging.getLogger('qordoba')
 
-DEFAULT_PATTERN = '<language_code><extension>'
+DEFAULT_PATTERN = '<language_code>.<extension>'
 
 CONTENT_TYPE_CODES = OrderedDict()
 CONTENT_TYPE_CODES['excel'] = ('xlsx',)
@@ -128,64 +128,71 @@ def validate_path(curdir, path, lang):
     return path
 
 
-class LanguagePatternVariables(object):
+class PatternVariables(object):
     language_code = 'language_code'
     language_name = 'language_name'
     language_name_cap = 'language_name_cap'
     language_name_allcap = 'language_name_allcap'
     language_lang_code = 'language_lang_code'
 
-    all = language_code, language_name, language_name_cap, language_name_allcap, language_lang_code
+    filename = 'filename'
+    extension = 'extension'
+
+    all = language_code, language_name, language_name_cap, language_name_allcap, language_lang_code, filename, extension
 
 
 push_pattern_validate_regexp = re.compile(
     '\<({})\>'
-        .format('|'.join((LanguagePatternVariables.language_code, LanguagePatternVariables.language_lang_code)))
+        .format('|'.join((PatternVariables.language_code, PatternVariables.language_lang_code)))
 )
-pull_pattern_validate_regexp = re.compile('\<({})\>'.format('|'.join(LanguagePatternVariables.all)))
+pull_pattern_validate_regexp = re.compile('\<({})\>'.format('|'.join(PatternVariables.all)))
 
 
 def validate_push_pattern(pattern):
     if not push_pattern_validate_regexp.search(pattern):
         raise PatternNotValid(
-            'Pattern not valid. Should contain one of the value: {}'.format(', '.join(LanguagePatternVariables.all)))
+            'Pattern not valid. Should contain one of the value: {}'.format(', '.join(PatternVariables.all)))
 
     pattern_re = to_posix(pattern)
     pattern_re = re.escape(pattern_re)
 
     expression_re = pattern_re.replace(re.escape('<language_code>'), '(?P<language_code>[\w]{2}\-[\w]{2})')
 
-    lang_pattern_escaped = re.escape('<{}>'.format(LanguagePatternVariables.language_lang_code))
+    lang_pattern_escaped = re.escape('<{}>'.format(PatternVariables.language_lang_code))
     expression_re = expression_re.replace(lang_pattern_escaped,
-                                          '(?P<{}>[\w]*)'.format(LanguagePatternVariables.language_lang_code))
+                                          '(?P<{}>[\w]*)'.format(PatternVariables.language_lang_code))
 
     expression_re = re.compile('^{}$'.format(expression_re), flags=re.IGNORECASE)
     return expression_re
 
 
-def create_target_path_by_pattern(curdir, language, pattern=None, source_name=None, content_type_code=None):
+def create_target_path_by_pattern(curdir, language, source_name, pattern=None, content_type_code=None):
     if pattern is not None and not pull_pattern_validate_regexp.search(pattern):
         raise PatternNotValid(
             'Pull pattern not valid. Should contain one of the value: {}'.format(
-                ', '.join(LanguagePatternVariables.all)))
+                ', '.join(PatternVariables.all)))
 
     pattern = pattern or DEFAULT_PATTERN
 
-    target_path = pattern.replace('<{}>'.format(LanguagePatternVariables.language_code), language.code)
-    target_path = target_path.replace('<{}>'.format(LanguagePatternVariables.language_lang_code), language.lang)
-    target_path = target_path.replace('<{}>'.format(LanguagePatternVariables.language_name), language.name)
-    target_path = target_path.replace('<{}>'.format(LanguagePatternVariables.language_name_cap),
+    target_path = pattern.replace('<{}>'.format(PatternVariables.language_code), language.code)
+    target_path = target_path.replace('<{}>'.format(PatternVariables.language_lang_code), language.lang)
+    target_path = target_path.replace('<{}>'.format(PatternVariables.language_name), language.name)
+    target_path = target_path.replace('<{}>'.format(PatternVariables.language_name_cap),
                                       language.name.capitalize())
-    target_path = target_path.replace('<{}>'.format(LanguagePatternVariables.language_name_allcap),
+    target_path = target_path.replace('<{}>'.format(PatternVariables.language_name_allcap),
                                       language.name.upper())
 
-    if target_path.endswith('<extension>'):
+    if '<{}>'.format(PatternVariables.extension) in target_path \
+            or '<{}>'.format(PatternVariables.filename) in target_path:
         try:
-            _, extension = os.path.splitext(source_name)
+            filename, extension = os.path.splitext(source_name)
+            extension = extension.strip('.')
         except (ValueError, AttributeError):
             extension = ''
+            filename = source_name
 
-        target_path = target_path.replace('<extension>', extension)
+        target_path = target_path.replace('<{}>'.format(PatternVariables.extension), extension)
+        target_path = target_path.replace('<{}>'.format(PatternVariables.filename), filename)
 
     return validate_path(curdir, target_path, language)
 
@@ -235,7 +242,7 @@ def find_files_by_pattern(curpath, pattern):
         if match:
             lang_map = match.groupdict()
             lang = ''
-            for lang_str in (lang_map[pattern] for pattern in LanguagePatternVariables.all if pattern in lang_map):
+            for lang_str in (lang_map[pattern] for pattern in PatternVariables.all if pattern in lang_map):
                 try:
                     lang = normalize_language(lang_str)
                 except LanguageNotFound:

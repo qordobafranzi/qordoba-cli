@@ -73,7 +73,7 @@ def test_validate_push_pattern_invalid(invalid_pattern):
                                              ])
 def test_create_target_path_by_pattern_invalid(invalid_pattern, projectdir):
     with pytest.raises(PatternNotValid):
-        create_target_path_by_pattern(projectdir, None, pattern=invalid_pattern)
+        create_target_path_by_pattern(projectdir, None, None, pattern=invalid_pattern)
 
 
 @pytest.mark.parametrize('pattern,target_language,expected', [
@@ -85,5 +85,5 @@ def test_create_target_path_by_pattern_invalid(invalid_pattern, projectdir):
     (PATTERN6, LANGUAGE_FR, 'FRENCH.locale')
 ])
 def test_create_target_path_by_pattern(mock_lang_storage, pattern, target_language, expected):
-    res = create_target_path_by_pattern('', target_language, pattern=pattern)
+    res = create_target_path_by_pattern('', target_language, None, pattern=pattern)
     assert res.native_path == expected
