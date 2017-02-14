@@ -147,7 +147,23 @@ class PullHandler(BaseHandler):
                             help="Option to work only on specific (comma-separated) languages")
         parser.add_argument('-f', '--force', dest='force', action='store_true',
                             help='Force to update local translation files. Do not ask approval.')
+
+        group = parser.add_mutually_exclusive_group()
+        group.add_argument('--skip', dest='skip', action='store_true', help='Skip downloading if file exists')
+        group.add_argument('--replace', dest='replace', action='store_true', help='Replace existing file')
+        group.add_argument('--set-new', dest='set_new', action='store_true',
+                           help='Ask to set new filename if file exists.')
         return parser
+
+    def get_update_action(self):
+        action = None
+        if self.skip:
+            action = 'skip'
+        elif self.replace:
+            action = 'replace'
+        elif self.set_new:
+            action = 'set_new'
+        return action
 
     def main(self):
         config = self.load_settings()
@@ -155,7 +171,7 @@ class PullHandler(BaseHandler):
         if isinstance(self.languages, (list, tuple, set)):
             languages.extend(self.languages)
         pull_command(self._curdir, config, languages=set(itertools.chain(*languages)),
-                     in_progress=self.in_progress, force=self.force)
+                     in_progress=self.in_progress, update_action=self.get_update_action(), force=self.force)
 
 
 class PushHandler(BaseHandler):

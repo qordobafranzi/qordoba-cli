@@ -27,6 +27,16 @@ class FileUpdateOptions(object):
 
     all = skip, replace, new_name
 
+    _actions = {
+        'skip': skip,
+        'replace': replace,
+        'set_new': new_name
+    }
+
+    @classmethod
+    def get_action(cls, name):
+        return cls._actions.get(name, None)
+
 
 def validate_languges_input(languages, project_languages):
     selected_langs = set()
@@ -41,7 +51,7 @@ def validate_languges_input(languages, project_languages):
     return list(selected_langs)
 
 
-def pull_command(curdir, config, force=False, languages=(), in_progress=False, **kwargs):
+def pull_command(curdir, config, force=False, languages=(), in_progress=False, update_action=None, **kwargs):
     api = ProjectAPI(config)
     init_language_storage(api)
     project = api.get_project()
@@ -78,10 +88,10 @@ def pull_command(curdir, config, force=False, languages=(), in_progress=False, *
                                                         source_name=page_status['name'],
                                                         content_type_code=page_status['content_type_code'])
 
-
             if os.path.exists(target_path.native_path) and not force:
                 log.warning('Translation file is already exist. `{}`'.format(target_path.native_path))
-                answer = ask_select(FileUpdateOptions.all, prompt='Choice: ')
+                answer = FileUpdateOptions.get_action(update_action) or ask_select(FileUpdateOptions.all,
+                                                                                   prompt='Choice: ')
                 if answer == FileUpdateOptions.skip:
                     log.info('Download translation file `{}` skipped.'.format(target_path.native_path))
                     continue
