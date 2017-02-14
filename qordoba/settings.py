@@ -57,6 +57,10 @@ def load_settings_from_file(path):
     try:
         with open(path, 'r') as f:
             config = yaml.safe_load(f)
+            if not config or not config.get('qordoba', None):
+                log.warning('Could not parse config file: {}'.format(path))
+                return {}
+
             return config['qordoba']
 
     except (yaml.parser.ParserError, KeyError):
@@ -77,7 +81,7 @@ def dump_settings(path, data):
 
 
 def load_settings(**kwargs):
-    log.info('Loading qordoba config...')
+    log.info('Loading Qordoba config...')
 
     settings = None
     loaded = False

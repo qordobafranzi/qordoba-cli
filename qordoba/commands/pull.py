@@ -89,11 +89,11 @@ def pull_command(curdir, config, force=False, languages=(), in_progress=False, u
                                                         content_type_code=page_status['content_type_code'])
 
             if os.path.exists(target_path.native_path) and not force:
-                log.warning('Translation file is already exist. `{}`'.format(target_path.native_path))
+                log.warning('Translation file already exists. `{}`'.format(target_path.native_path))
                 answer = FileUpdateOptions.get_action(update_action) or ask_select(FileUpdateOptions.all,
                                                                                    prompt='Choice: ')
                 if answer == FileUpdateOptions.skip:
-                    log.info('Download translation file `{}` skipped.'.format(target_path.native_path))
+                    log.info('Download translation file was `{}` skipped.'.format(target_path.native_path))
                     continue
                 elif answer == FileUpdateOptions.new_name:
                     while os.path.exists(target_path.native_path):

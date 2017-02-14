@@ -19,7 +19,7 @@ class FilesNotFound(Exception):
 
 
 def select_version_tag(file_name, version_tags):
-    log.info('File `{}` already exist with tags {}. Please setup new version tag:'
+    log.info('File `{}` already exists with tags {}. Please setup new version tag:'
              .format(file_name, ', '.join(version_tags)))
 
     version_tag = None

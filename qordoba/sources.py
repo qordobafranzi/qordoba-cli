@@ -151,7 +151,7 @@ pull_pattern_validate_regexp = re.compile('\<({})\>'.format('|'.join(PatternVari
 def validate_push_pattern(pattern):
     if not push_pattern_validate_regexp.search(pattern):
         raise PatternNotValid(
-            'Pattern not valid. Should contain one of the value: {}'.format(', '.join(PatternVariables.all)))
+            'Push pattern is not valid. Pattern should contain one of the values: {}'.format(', '.join(PatternVariables.all)))
 
     pattern_re = to_posix(pattern)
     pattern_re = re.escape(pattern_re)
@@ -169,7 +169,7 @@ def validate_push_pattern(pattern):
 def create_target_path_by_pattern(curdir, language, source_name, pattern=None, content_type_code=None):
     if pattern is not None and not pull_pattern_validate_regexp.search(pattern):
         raise PatternNotValid(
-            'Pull pattern not valid. Should contain one of the value: {}'.format(
+            'Pull pattern is not valid. Pattern should contain one of the values: {}'.format(
                 ', '.join(PatternVariables.all)))
 
     pattern = pattern or DEFAULT_PATTERN
