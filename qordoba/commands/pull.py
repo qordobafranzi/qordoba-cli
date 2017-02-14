@@ -93,7 +93,7 @@ def pull_command(curdir, config, force=False, languages=(), in_progress=False, u
                 answer = FileUpdateOptions.get_action(update_action) or ask_select(FileUpdateOptions.all,
                                                                                    prompt='Choice: ')
                 if answer == FileUpdateOptions.skip:
-                    log.info('Download translation file was `{}` skipped.'.format(target_path.native_path))
+                    log.info('Download translation file `{}` was skipped.'.format(target_path.native_path))
                     continue
                 elif answer == FileUpdateOptions.new_name:
                     while os.path.exists(target_path.native_path):
