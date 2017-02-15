@@ -42,7 +42,7 @@ def test_ask_bool(mock_input, question, answers, expected):
 
     assert res == expected
     assert mock_input.call_count == 2
-    mock_input.assert_called_with('[Y/n]')
+    mock_input.assert_called_with('[y/n]')
 
 
 @pytest.mark.parametrize('question_list,answers,promt,expected', [
