@@ -74,7 +74,7 @@ def ask_select_multiple(question_list, prompt="Select: "):
     return [q for ix, q in enumerate(question_list, start=1) if ix in answer]
 
 
-def ask_bool(question='[Y/n]?'):
+def ask_bool(question='[y/n]?'):
     """
     Ask user a question in intercative mode
     """
@@ -85,7 +85,7 @@ def ask_bool(question='[Y/n]?'):
     answer = None
     while answer not in valid:
         answer = ask_simple(question)
-        question = '[Y/n]'
+        question = '[y/n]'
 
     return answer in yes
 

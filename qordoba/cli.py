@@ -22,14 +22,15 @@ from qordoba.log import init
 
 log = logging.getLogger('qordoba')
 
-
 try:
     import signal
+
 
     def exithandler(signum, frame):
         signal.signal(signal.SIGINT, signal.SIG_IGN)
         signal.signal(signal.SIGTERM, signal.SIG_IGN)
         sys.exit(1)
+
 
     signal.signal(signal.SIGINT, exithandler)
     signal.signal(signal.SIGTERM, exithandler)
@@ -64,17 +65,23 @@ class BaseHandler(with_metaclass(ABCMeta)):
     def register(cls, root, **kwargs):
         kwargs.setdefault('name', cls.name)
         kwargs.setdefault('help', cls.help)
+        kwargs['add_help'] = False
 
         parser = root.add_parser(**kwargs)
         parser.set_defaults(_handler=cls)
-        parser.add_argument('--project-id', required=False, type=int, dest='project_id', help='The ID of your Qordoba project',
+        parser.add_argument('--project-id', required=False, type=int, dest='project_id',
+                            help='The ID of your Qordoba project.',
                             default=None)
-        parser.add_argument('--access-token', required=False, type=str, dest='access_token', help='Your Qordoba access token',
+        parser.add_argument('--access-token', required=False, type=str, dest='access_token',
+                            help='Your Qordoba access token.',
                             default=None)
-        parser.add_argument('--organization-id', required=False, type=int, dest='organization_id', help='The ID of your Qordoba project',
+        parser.add_argument('--organization-id', required=False, type=int, dest='organization_id',
+                            help='The ID of your Qordoba project.',
                             default=None)
         parser.add_argument('--traceback', dest='traceback', action='store_true')
         parser.add_argument('--debug', dest='debug', default=False, action='store_true')
+        parser.add_argument('-h', '--help', action='help', default=argparse.SUPPRESS,
+                            help='Show this help message and exit.')
 
         return parser
 
@@ -100,20 +107,24 @@ class InitHandler(BaseHandler):
     def register(cls, root, **kwargs):
         kwargs.setdefault('name', cls.name)
         kwargs.setdefault('help', cls.help)
+        kwargs['add_help'] = False
 
         parser = root.add_parser(**kwargs)
         parser.set_defaults(_handler=cls)
         parser.add_argument('--organization-id', type=int, required=False, dest='organization_id',
-                            help='The ID of your Qordoba organization')
+                            help='The ID of your Qordoba organization.')
         parser.add_argument('--access-token', type=str, required=True, dest='access_token',
-                            help='Your Qordoba access token',
+                            help='Your Qordoba access token.',
                             default=None)
-        parser.add_argument('--project-id', type=int, required=True, dest='project_id', help='The ID of your Qordoba project',
+        parser.add_argument('--project-id', type=int, required=True, dest='project_id',
+                            help='The ID of your Qordoba project.',
                             default=None)
 
         parser.add_argument('--traceback', dest='traceback', action='store_true')
         parser.add_argument('--debug', dest='debug', action='store_true')
         parser.add_argument('--force', dest='force', action='store_true')
+        parser.add_argument('-h', '--help', action='help', default=argparse.SUPPRESS,
+                            help='Show this help message and exit.')
 
 
 class StatusHandler(BaseHandler):
@@ -141,16 +152,16 @@ class PullHandler(BaseHandler):
     def register(cls, *args, **kwargs):
         parser = super(PullHandler, cls).register(*args, **kwargs)
         parser.add_argument('--in-progress', dest='in_progress', action='store_true',
-                            help='Allow to download not completed translations')
+                            help='Allow to download not completed translations.')
 
         parser.add_argument('-l', '--languages', dest='languages', nargs='+', type=CommaSeparatedSet(),
-                            help="Option to work only on specific (comma-separated) languages")
+                            help="Work only on specified (comma-separated) languages.")
         parser.add_argument('-f', '--force', dest='force', action='store_true',
                             help='Force to update local translation files. Do not ask approval.')
 
         group = parser.add_mutually_exclusive_group()
-        group.add_argument('--skip', dest='skip', action='store_true', help='Skip downloading if file exists')
-        group.add_argument('--replace', dest='replace', action='store_true', help='Replace existing file')
+        group.add_argument('--skip', dest='skip', action='store_true', help='Skip downloading if file exists.')
+        group.add_argument('--replace', dest='replace', action='store_true', help='Replace existing file.')
         group.add_argument('--set-new', dest='set_new', action='store_true',
                            help='Ask to set new filename if file exists.')
         return parser
@@ -182,7 +193,7 @@ class PushHandler(BaseHandler):
 
     def load_settings(self):
         config = super(PushHandler, self).load_settings()
-        config.validate(keys=('organization_id', ))
+        config.validate(keys=('organization_id',))
         return config
 
     @classmethod
@@ -190,7 +201,7 @@ class PushHandler(BaseHandler):
         parser = super(PushHandler, cls).register(*args, **kwargs)
         parser.add_argument('files', nargs='*', metavar='PATH', default=None, type=FilePathType(), help="")
         parser.add_argument('--update', dest='update', action='store_true', help="Force to update file.")
-        parser.add_argument('--version', dest='version', default=None, type=str, help="Set version tag")
+        parser.add_argument('--version', dest='version', default=None, type=str, help="Set version tag.")
         return parser
 
     def main(self):
@@ -215,19 +226,19 @@ class ListHandler(BaseHandler):
 class DeleteHandler(BaseHandler):
     name = 'delete'
     help = """
-    Use the delete command to delete any resources and it's translations.
+    Use the delete command to delete any resource and its translations.
     """
 
     def load_settings(self):
         config = super(DeleteHandler, self).load_settings()
-        config.validate(keys=('organization_id', ))
+        config.validate(keys=('organization_id',))
         return config
 
     @classmethod
     def register(cls, *args, **kwargs):
         parser = super(DeleteHandler, cls).register(*args, **kwargs)
         parser.add_argument('file', default=(), type=str,
-                            help="Define resource name or ID")
+                            help="Define resource name or ID.")
         parser.add_argument('-f', '--force', dest='force', action='store_true', help='Force delete resources.')
         return parser
 
@@ -242,8 +253,11 @@ def parse_arguments():
         The Qordoba CLI allows you to manage your localization files.
         Using Qordoba CLI, you can pull and push content from within your own application.
         """,
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        add_help=False
     )
+    parser.add_argument('-h', '--help', action='help', default=argparse.SUPPRESS,
+                        help='Show this help message and exit.')
 
     subparsers = parser.add_subparsers()
 
