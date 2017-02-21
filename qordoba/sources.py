@@ -89,7 +89,7 @@ class TranslationFile(object):
 
     @property
     def unique_name(self):
-        return '-'.join(self.path_parts).lower()
+        return self.name
 
     def __hash__(self):
         return hash(str(self))

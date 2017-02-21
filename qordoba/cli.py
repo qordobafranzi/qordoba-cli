@@ -41,6 +41,18 @@ except KeyboardInterrupt:
     sys.exit(1)
 
 
+class ArgsHelpFormatter(argparse.ArgumentDefaultsHelpFormatter):
+    def add_usage(self, usage, actions, groups, prefix=None):
+        if prefix is None:
+            prefix = 'Usage: '
+        return super(ArgsHelpFormatter, self).add_usage(usage, actions, groups, prefix)
+
+
+def fix_parser_titles(parser):
+    parser._positionals.title = 'Positional arguments'
+    parser._optionals.title = 'Optional arguments'
+
+
 class BaseHandler(with_metaclass(ABCMeta)):
     name = NotImplemented
     help = None
@@ -68,6 +80,7 @@ class BaseHandler(with_metaclass(ABCMeta)):
         kwargs['add_help'] = False
 
         parser = root.add_parser(**kwargs)
+        fix_parser_titles(parser)
         parser.set_defaults(_handler=cls)
         parser.add_argument('--project-id', required=False, type=int, dest='project_id',
                             help='The ID of your Qordoba project.',
@@ -110,6 +123,7 @@ class InitHandler(BaseHandler):
         kwargs['add_help'] = False
 
         parser = root.add_parser(**kwargs)
+        fix_parser_titles(parser)
         parser.set_defaults(_handler=cls)
         parser.add_argument('--organization-id', type=int, required=False, dest='organization_id',
                             help='The ID of your Qordoba organization.')
@@ -253,20 +267,25 @@ def parse_arguments():
         The Qordoba CLI allows you to manage your localization files.
         Using Qordoba CLI, you can pull and push content from within your own application.
         """,
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        formatter_class=ArgsHelpFormatter,
         add_help=False
     )
+    parser._positionals.title = 'Positional arguments'
+    parser._optionals.title = 'Optional arguments'
     parser.add_argument('-h', '--help', action='help', default=argparse.SUPPRESS,
                         help='Show this help message and exit.')
 
     subparsers = parser.add_subparsers()
+    args = {
+        'formatter_class': ArgsHelpFormatter
+    }
 
-    InitHandler.register(subparsers)
-    StatusHandler.register(subparsers)
-    PullHandler.register(subparsers)
-    PushHandler.register(subparsers)
-    ListHandler.register(subparsers)
-    DeleteHandler.register(subparsers)
+    InitHandler.register(subparsers, **args)
+    StatusHandler.register(subparsers, **args)
+    PullHandler.register(subparsers, **args)
+    PushHandler.register(subparsers, **args)
+    ListHandler.register(subparsers, **args)
+    DeleteHandler.register(subparsers, **args)
 
     args = parser.parse_args()
     return args, parser
