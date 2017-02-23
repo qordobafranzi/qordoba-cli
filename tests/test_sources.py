@@ -7,15 +7,19 @@ PATTERN1 = 'i18n/<language_code>/translations.json'
 PATTERN2 = 'folder1/values-<language_lang_code>/strings.xml'
 PATTERN3 = 'config/locales/server.<language_code>.yml'
 
-#only for pull
 PATTERN4 = 'folder2/<language_name>/strings.xml'
 PATTERN5 = 'folder3/strings.<language_name_cap>'
 PATTERN6 = '<language_name_allcap>.locale'
 
+PATTERN_PUSH1 = 'config/*'
+PATTERN_PUSH2 = './*/*.json'
+PATTERN_PUSH3 = 'sources/[0-9]/*'
+PATTERN_PUSH4 = 'folder1/values-*/strings.xml'
+
+
 PATTERN_PUSH_INVALID1 = 'i18n/<language_lang>/translations.json'
-PATTERN_PUSH_INVALID2 = 'folder1/values-*/strings.xml'
-PATTERN_PUSH_INVALID3 = ''
-PATTERN_PUSH_INVALID4 = 'config/<language_name>/client.yml'  # valid for pull command
+PATTERN_PUSH_INVALID2 = ''
+PATTERN_PUSH_INVALID3 = './sources/'
 
 PATH1 = 'i18n/fr-fr/translations.json'
 
@@ -50,17 +54,14 @@ LANGUAGE_CN = Language({
 })
 
 
-@pytest.mark.parametrize('pattern', [PATTERN1, PATTERN2, PATTERN3])
+@pytest.mark.parametrize('pattern', [PATTERN_PUSH1, PATTERN_PUSH2, PATTERN_PUSH3])
 def test_validate_push_pattern(pattern):
     res = validate_push_pattern(pattern)
-    assert bool(res)
-    assert hasattr(res, 'match')
 
 
 @pytest.mark.parametrize('invalid_pattern', [PATTERN_PUSH_INVALID1,
                                              PATTERN_PUSH_INVALID2,
                                              PATTERN_PUSH_INVALID3,
-                                             PATTERN_PUSH_INVALID4
                                              ])
 def test_validate_push_pattern_invalid(invalid_pattern):
     with pytest.raises(PatternNotValid):

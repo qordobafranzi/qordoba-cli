@@ -1,5 +1,6 @@
 from __future__ import unicode_literals, print_function
 
+import glob
 import logging
 import os
 import re
@@ -149,21 +150,8 @@ pull_pattern_validate_regexp = re.compile('\<({})\>'.format('|'.join(PatternVari
 
 
 def validate_push_pattern(pattern):
-    if not push_pattern_validate_regexp.search(pattern):
-        raise PatternNotValid(
-            'Push pattern is not valid. Pattern should contain one of the values: {}'.format(', '.join(PatternVariables.all)))
-
-    pattern_re = to_posix(pattern)
-    pattern_re = re.escape(pattern_re)
-
-    expression_re = pattern_re.replace(re.escape('<language_code>'), '(?P<language_code>[\w]{2}\-[\w]{2})')
-
-    lang_pattern_escaped = re.escape('<{}>'.format(PatternVariables.language_lang_code))
-    expression_re = expression_re.replace(lang_pattern_escaped,
-                                          '(?P<{}>[\w]*)'.format(PatternVariables.language_lang_code))
-
-    expression_re = re.compile('^{}$'.format(expression_re), flags=re.IGNORECASE)
-    return expression_re
+    if not glob.has_magic(pattern):
+        raise PatternNotValid('Push pattern is not valid. Pattern should contain one of the values: *,?')
 
 
 def create_target_path_by_pattern(curdir, language, source_name, pattern=None, content_type_code=None):
@@ -230,32 +218,29 @@ def files_in_project(curpath, return_absolute_path=True):
             dirs.remove(removal)
 
 
-def find_files_by_pattern(curpath, pattern):
-    """
-    :param str curpath: Current directory
-    :param pattern: regexp
-    :type pattern:
-    :return: Iterator. Valid paths by pattern
-    """
-    for path in files_in_project(curpath, return_absolute_path=False):
-        match = pattern.match(path)
-        if match:
-            lang_map = match.groupdict()
-            lang = ''
-            for lang_str in (lang_map[pattern] for pattern in PatternVariables.all if pattern in lang_map):
-                try:
-                    lang = normalize_language(lang_str)
-                except LanguageNotFound:
-                    continue
-                else:
-                    break
+def _ishidden(path):
+    return path[0] in ('.', b'.'[0])
 
-            try:
-                path = validate_path(curpath, path, lang)
-            except LanguageNotFound:
-                log.warning('Language code "{}" not found in qordoba.'.format(repr(lang_map)))
 
-            yield path
+def find_files_by_pattern(curpath, pattern, lang):
+    validate_push_pattern(pattern)
+
+    for path in glob.iglob(pattern):
+        if os.path.isdir(path):
+            continue
+
+        if _ishidden(os.path.basename(path)):
+            continue
+
+        path = validate_path(curpath, path, lang)
+
+        try:
+            _ = get_content_type_code(path)
+        except FileExtensionNotAllowed as e:
+            log.debug('File path ignored: {}'.format(e))
+            continue
+
+        yield path
 
 
 def get_content_type_code(path):

@@ -3,4 +3,4 @@ qordoba:
   project_id: 1111
   push:
     sources:
-      - file: './config/locales/<language_code>.yml'
+      - file: 'sources/*'

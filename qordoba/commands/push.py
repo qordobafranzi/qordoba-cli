@@ -132,16 +132,15 @@ def push_command(curdir, config, update=False, version=None, files=()):
     api = ProjectAPI(config)
     init_language_storage(api)
 
-    if not files:
-        pattern = get_push_pattern(config)
-        pattern = validate_push_pattern(pattern)
-        files = list(find_files_by_pattern(curdir, pattern))
-        if not files:
-            raise FilesNotFound('Files not found by pattern `{}`'.format(pattern))
-
     project = api.get_project()
     source_lang = get_source_language(project)
     lang = next(get_destination_languages(project))
+
+    if not files:
+        pattern = get_push_pattern(config)
+        files = list(find_files_by_pattern(curdir, pattern, source_lang))
+        if not files:
+            raise FilesNotFound('Files not found by pattern `{}`'.format(pattern))
 
     for file in files:
         path = validate_path(curdir, file, source_lang)
