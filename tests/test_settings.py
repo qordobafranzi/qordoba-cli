@@ -65,7 +65,7 @@ def test_load_settings(mock_change_dir):
     assert config['project_id'] == 1111
     assert 'push' in config
     assert 'sources' in config['push']
-    assert './config/locales/<language_code>.yml' == config['push']['sources'][0]['file']
+    assert 'sources/*' == config['push']['sources'][0]['file']
 
 
 def test_load_settings_overrite(mock_change_dir):
