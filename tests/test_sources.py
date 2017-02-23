@@ -1,7 +1,10 @@
+import os
+
 import pytest
 
 from qordoba.languages import Language
-from qordoba.sources import validate_push_pattern, PatternNotValid, create_target_path_by_pattern, to_native
+from qordoba.sources import validate_push_pattern, PatternNotValid, create_target_path_by_pattern, to_native, \
+    find_files_by_pattern
 
 PATTERN1 = 'i18n/<language_code>/translations.json'
 PATTERN2 = 'folder1/values-<language_lang_code>/strings.xml'
@@ -54,6 +57,14 @@ LANGUAGE_CN = Language({
 })
 
 
+@pytest.fixture
+def mock_change_dir(monkeypatch, curdir):
+    root = os.path.abspath(curdir)
+    chdir_path = os.path.join(root, 'fixtures', 'push')
+    monkeypatch.chdir(chdir_path)
+    return chdir_path
+
+
 @pytest.mark.parametrize('pattern', [PATTERN_PUSH1, PATTERN_PUSH2, PATTERN_PUSH3])
 def test_validate_push_pattern(pattern):
     res = validate_push_pattern(pattern)
@@ -88,3 +99,19 @@ def test_create_target_path_by_pattern_invalid(invalid_pattern, projectdir):
 def test_create_target_path_by_pattern(mock_lang_storage, pattern, target_language, expected):
     res = create_target_path_by_pattern('', target_language, None, pattern=pattern)
     assert res.native_path == expected
+
+
+@pytest.mark.parametrize('pattern,expected', [
+    ('./sources/*', ['./sources/sampleA.json', './sources/sampleB.json']),
+    ('./sources/*/*', ['./sources/C/sampleC.json', './sources/D/sampleD.json']),
+    ('./sources/*/sample[A,C].json', ['./sources/C/sampleC.json', ])
+])
+def test_find_files_by_pattern(mock_change_dir, mock_lang_storage, pattern, expected):
+    paths = list(find_files_by_pattern(mock_change_dir, pattern, LANGUAGE_EN))
+
+    assert len(paths) == len(expected)
+    for path in paths:
+        assert path.posix_path in expected
+
+
+
