@@ -52,7 +52,7 @@ class FileExtensionNotAllowed(Exception):
 
 
 def to_posix(filepath):
-    return filepath if os.altsep is None else filepath.replace(os.altsep, '/')
+    return filepath if os.altsep is None else filepath.replace(os.altsep, '/').replace(os.sep, '/')
 
 
 def to_native(filepath):
