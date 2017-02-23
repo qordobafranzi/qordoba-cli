@@ -89,7 +89,7 @@ class BaseHandler(with_metaclass(ABCMeta)):
                             help='Your Qordoba access token.',
                             default=None)
         parser.add_argument('--organization-id', required=False, type=int, dest='organization_id',
-                            help='The ID of your Qordoba project.',
+                            help='The ID of your Qordoba organization.',
                             default=None)
         parser.add_argument('--traceback', dest='traceback', action='store_true')
         parser.add_argument('--debug', dest='debug', default=False, action='store_true')
