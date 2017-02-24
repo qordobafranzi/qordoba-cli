@@ -202,7 +202,7 @@ class PullHandler(BaseHandler):
 class PushHandler(BaseHandler):
     name = 'push'
     help = """
-    Use the push command to upload your local files to the project.
+    Use the push command to upload your resource files to the project.
     """
 
     def load_settings(self):
