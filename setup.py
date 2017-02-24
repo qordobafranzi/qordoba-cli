@@ -18,6 +18,8 @@ def get_requirements(filename):
 
 setup(
     name="qordoba",
+    author="Qordoba",
+    author_email="hello@qordoba.com",
     version=__version__,
     entry_points={'console_scripts': ['qor=qordoba.cli:main', 'qordoba=qordoba.cli:main']},
     description="Qordoba command line tool",
