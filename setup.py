@@ -3,7 +3,7 @@
 from codecs import open
 from setuptools import setup
 
-__version__ = '1.0.3'
+__version__ = '1.0.4'
 
 
 packages = [
