@@ -1,0 +1,120 @@
+{
+    "_override_link_account": {
+        "bundle_signin": {
+            "password": "Enter your password",
+            "username": "Enter your username",
+            "email": "Enter your email:",
+        }
+    },
+    "link_account": {
+        "create": {
+            "create_password": "Create Password",
+            "create_password_to_connect": "Enter your password"
+        },
+        "signin": {
+            "to_connect": "Sign in to your Company account to link it to __wallet__",
+            "enter_password": "Enter Password",
+            "signin_to_connect": "Sign In to Link",
+            "incorrect_signin": "You've entered incorrect sign-in credentials.",
+            "did_you": "Did you ",
+             "crm_desc": "Stay in the know with -for-you e-mails from Company.",
+            "crm_agreement": "I agree Company may uons with Company to tailor my emails.",
+            "password_minimum": "Minimum 6 Characters",
+            "forget_password": "forget your password?"
+        },
+        "challenge": {
+            "send_otp_page": {
+                "header": "Confirm your identity",
+                "description": "For security purposes, we need to send you a verification code to the email address associated with your Company account to confirm your identity.",
+                "submit_button": "Send Verification Code"
+            },
+            "verify_otp_page": {
+                "header": "Enter your verification code",
+                "description": "You should receive your code via email shortly. Didn't receive our email?",
+                "resend_link": "Resend.",
+                "otp_label": "Verification Code",
+                "invalid_otp_label": "Invalid verification code",
+                "submit_button": "Confirm Code"
+            },
+            "max_attempt_reached_page": {
+                "header": "Get new verification code",
+                "description": "You've reached the maximum number of attempts with your current verification code. To continue, we'll send you another code to verify your identity.",
+                "send_new_otp_button": "Send New Verification Code",
+                "create_new_account": "Create a new account"
+            },
+            "temporary_locked_page": {
+                "header": "Identity not confirmed",
+                "description": "Sorry, we weren't able to confirm your verification code. For security purposes, we've temporarily locked your device. Please try again later."
+            },
+            "generic": {
+                "notifications": {
+                    "send_notification": "Verification code sent to __name__",
+                    "resend_notification": "Another email was sent to __name__"
+                },
+                "errors": {
+                    "invalid_otp": "Sorry, the code you entered is incorrect.",
+                    "account_not_found": "Sorry, we weren't able to find this email address in our system. Please try again.",
+                    "account_disabled": "Sorry, we’re unable to process your request at this time. For your protection, your account has been temporarily disabled. Please contact Customer Support.",
+                    "account_unavailable": "Sorry, we’re unable to process  your request at this time. Try again later or contact Customer Support.",
+                    "account_locked": "Sorry, for your protection, your account has been locked. You may attempt to log back in by clicking “Forgot?” or try again later."
+                }
+            }
+        },
+        "forgot_password": {
+            "send_otp_page": {
+                "header": "Reset your password",
+                "description": "We'll send you a password reset code to the email address associated with your Company account to reset your password.",
+                "submit_button": "Send Code"
+            },
+            "verify_otp_page": {
+                "header": "Enter password reset code",
+                "description": "You should receive your code via email shortly. Didn't receive our email?",
+                "resend_link": "Resend.",
+                "otp_label": "Password Reset Code",
+                "invalid_otp_label": "Invalid password reset code",
+                "submit_button": "Confirm Code"
+            },
+            "max_attempt_reached_page": {
+                "header": "Get new password reset code",
+                "description": "You've reached the max amount of attempts with this code. To continue, you'll need to get another password reset code.",
+                "send_new_otp_button": "Send New Code",
+                "create_new_account": "Create a new account"
+            },
+            "temporary_locked_page": {
+                "header": "Identity not confirmed",
+                "description": "Sorry, we weren't able to confirm your password reset code. For security purposes, we've temporarily locked your device. Please try again later."
+            },
+            "create_new_password_page": {
+                "title": "Create a new password",
+                "description": "Once you've successfully created your password, you'll link your Company Checkout account to __wallet__",
+                "password_label": "Create Password",
+                "helper_text": "Minimum 6 Characters",
+                "submit_button": "Create Password to Link"
+            },
+            "generic": {
+                "notifications": {
+                    "send_notification": "Password reset code sent to __name__",
+                    "resend_notification": "Another email was sent to __name__",
+                    "create_password_success`": "Your password has been successfully updated!"
+                },
+                "errors": {
+                    "invalid_otp": "Sorry, the reset code you entered is incorrect.",
+                    "account_not_found": "Sorry, we weren't able to find this email address in our system. Please try again.",
+                    "account_disabled": "Sorry, we’re unable to process your request at this time. For your protection, your account has been temporarily disabled. Please contact Customer Support.",
+                    "account_unavailable": "Sorry, we’re unable to process  your request at this time. Try again later or contact Customer Support.",
+                    "account_locked": "Sorry, for your protection, your account has been locked. You may attempt to log back in by clicking “Forgot?” or try again later.",
+                    "cant_use_same_password": "Sorry, your new password can't be the same as your previous one."
+                }
+            }
+        },
+        "signin_with": "Sign in with",
+        "acknowledgement": "You acknowledge that by connecting __wallet__ to Company, you allow __wallet__ to share your cards with Company to enable online purchases.",
+        "show": "Show",
+        "hide": "Hide",
+        "aria_show": "Show password characters",
+        "aria_hide": "Hide password characters",
+        "cancel": "Cancel",
+        "no_thanks": "No thanks, not now",
+        "wallet": "Wallet"
+    }
+}
